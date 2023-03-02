@@ -1,2 +1,1 @@
-# nextJS-blog
-블로그 만들기
+# NextJS로 블로그 만들기
