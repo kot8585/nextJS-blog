@@ -1,7 +1,10 @@
+import HomePage from "./HomePage";
+import HeadTitle from "../components/Helmet";
 export default function Home() {
   return (
-    <div>
-      <h1>Hello</h1>
-    </div>
+    <>
+      <HeadTitle title="Home" />
+      <HomePage />
+    </>
   );
 }
