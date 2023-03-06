@@ -1,30 +1,25 @@
-import HomePage from "./HomePage";
 import { getSortedPostsData } from "../lib/posts";
 import Helmet from "../components/Helmet";
-import Date from "@/components/date";
+import PostCard from "./PostCard";
 
 type HomeProps = {
-  allPostsData: {
-    id: string;
-    date: string;
-    title: string;
-  }[];
+  allPostsData: PostData[];
+};
+
+export type PostData = {
+  id: string;
+  date: string;
+  title: string;
 };
 
 export default function Home({ allPostsData }: HomeProps) {
   return (
     <>
       <Helmet title="Home" />
-      <HomePage />
+      {/* <User /> */}
       <ul>
-        {allPostsData.map(({ id, date, title }) => (
-          <li key={id}>
-            {title}
-            <br />
-            {id}
-            <br />
-            <Date dateString={date} />
-          </li>
+        {allPostsData.map((postData: PostData) => (
+          <PostCard postData={postData} key={postData.id} />
         ))}
       </ul>
     </>

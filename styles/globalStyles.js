@@ -14,4 +14,13 @@ export const GlobalStyle = createGlobalStyle`
   a {
     text-decoration: none;
   }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  h2 { 
+    margin: 0;
+  }
 `;
