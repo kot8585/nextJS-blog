@@ -8,10 +8,10 @@ export default function Header() {
     <header>
       <Link href="/">HyoJeong Blog</Link>
       <button>
-        <BsFillSunFill />
+        <GoSearch />
       </button>
       <button>
-        <GoSearch />
+        <BsFillSunFill />
       </button>
     </header>
   );

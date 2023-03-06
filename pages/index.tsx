@@ -1,10 +1,41 @@
 import HomePage from "./HomePage";
-import HeadTitle from "../components/Helmet";
-export default function Home() {
+import { getSortedPostsData } from "../lib/posts";
+import Helmet from "../components/Helmet";
+import Date from "@/components/date";
+
+type HomeProps = {
+  allPostsData: {
+    id: string;
+    date: string;
+    title: string;
+  }[];
+};
+
+export default function Home({ allPostsData }: HomeProps) {
   return (
     <>
-      <HeadTitle title="Home" />
+      <Helmet title="Home" />
       <HomePage />
+      <ul>
+        {allPostsData.map(({ id, date, title }) => (
+          <li key={id}>
+            {title}
+            <br />
+            {id}
+            <br />
+            <Date dateString={date} />
+          </li>
+        ))}
+      </ul>
     </>
   );
+}
+
+export async function getStaticProps() {
+  const allPostsData = getSortedPostsData();
+  return {
+    props: {
+      allPostsData,
+    },
+  };
 }
