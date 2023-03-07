@@ -6,12 +6,13 @@ export const GlobalStyle = createGlobalStyle`
     font-family: Open-Sans, Helvetica, Sans-Serif;
   }
 
-  button{
+  button {
     border: 0;
     background-color: transparent;
   }
 
   a {
     text-decoration: none;
+    color: black;
   }
 `;
