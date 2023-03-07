@@ -2,6 +2,8 @@ import Date from "@/components/Date";
 import Helmet from "@/components/Helmet";
 import { getAllPostIds, getPostData } from "@/lib/posts";
 import { GetStaticPaths, GetStaticProps } from "next";
+import styled from "styled-components";
+import { SmallSpan } from "../PostCard";
 
 export default function Post({
   postData,
@@ -15,9 +17,10 @@ export default function Post({
   return (
     <>
       <Helmet title={postData.title} />
-      {postData.title}
-      <br />
-      <Date dateString={postData.date} />
+      <Title>{postData.title}</Title>
+      <SmallSpan>
+        <Date dateString={postData.date} />
+      </SmallSpan>
       <br />
       <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
     </>
@@ -42,3 +45,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     },
   };
 };
+
+const Title = styled.h1`
+  font-size: 32px;
+  margin: 2px;
+`;

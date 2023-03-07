@@ -15,4 +15,20 @@ export const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     color: black;
   }
+
+  code {
+    background-color: #EBEBEB;
+    padding: 2px;
+    border: 1px solid #B8B8B8;
+    border-radius: 5px;
+  }
+
+  pre {
+    padding: 5px;
+  }
+
+  pre > code {
+    border: 0px;
+    background-color: transparent;
+  }
 `;

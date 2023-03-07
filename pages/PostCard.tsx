@@ -43,7 +43,7 @@ const Span = styled.span`
   color: black;
 `;
 
-const SmallSpan = styled.span`
+export const SmallSpan = styled.span`
   font-size: small;
   font-weight: 300;
   color: gray;
