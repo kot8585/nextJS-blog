@@ -1,6 +1,7 @@
 import { getSortedPostsData } from "../lib/posts";
 import Helmet from "../components/Helmet";
 import PostCard from "./PostCard";
+import styled from "styled-components";
 
 type HomeProps = {
   allPostsData: PostData[];
@@ -17,11 +18,11 @@ export default function Home({ allPostsData }: HomeProps) {
     <>
       <Helmet title="Home" />
       {/* <User /> */}
-      <ul>
+      <Ul>
         {allPostsData.map((postData: PostData) => (
           <PostCard postData={postData} key={postData.id} />
         ))}
-      </ul>
+      </Ul>
     </>
   );
 }
@@ -34,3 +35,8 @@ export async function getStaticProps() {
     },
   };
 }
+
+const Ul = styled.ul`
+  list-style: none;
+  padding: 0;
+`;
