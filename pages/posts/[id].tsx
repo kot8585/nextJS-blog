@@ -1,8 +1,7 @@
-import Date from "@/components/date";
-import Layout from "@/components/Layout";
+import Date from "@/components/Date";
+import Helmet from "@/components/Helmet";
 import { getAllPostIds, getPostData } from "@/lib/posts";
 import { GetStaticPaths, GetStaticProps } from "next";
-import Head from "next/head";
 
 export default function Post({
   postData,
@@ -14,16 +13,14 @@ export default function Post({
   };
 }) {
   return (
-    <Layout>
-      <Head>
-        <title>{postData.title}</title>
-      </Head>
+    <>
+      <Helmet title={postData.title} />
       {postData.title}
       <br />
       <Date dateString={postData.date} />
       <br />
       <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
-    </Layout>
+    </>
   );
 }
 
