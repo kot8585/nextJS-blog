@@ -1,6 +1,6 @@
 import { getSortedPostsData } from "../lib/posts";
 import Helmet from "../components/Helmet";
-import PostCard from "./PostCard";
+import PostCard from "../components/PostCard";
 import styled from "styled-components";
 
 type HomeProps = {

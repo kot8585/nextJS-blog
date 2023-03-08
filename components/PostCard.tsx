@@ -1,6 +1,6 @@
 import React from "react";
 import Date from "@/components/Date";
-import { PostData } from "./index";
+import { PostData } from "../pages/index";
 import styled from "styled-components";
 import Link from "next/link";
 

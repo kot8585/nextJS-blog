@@ -3,7 +3,7 @@ import Helmet from "@/components/Helmet";
 import { getAllPostIds, getPostData } from "@/lib/posts";
 import { GetStaticPaths, GetStaticProps } from "next";
 import styled from "styled-components";
-import { SmallSpan } from "../PostCard";
+import { SmallSpan } from "../../components/PostCard";
 
 export default function Post({
   postData,
