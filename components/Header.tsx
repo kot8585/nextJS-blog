@@ -1,16 +1,19 @@
-import React from "react";
 import { GoSearch } from "react-icons/go";
-import { BsFillSunFill } from "react-icons/bs";
+import { BsFillSunFill, BsFillMoonStarsFill } from "react-icons/bs";
 import Link from "next/link";
 import styled from "styled-components";
+import { useDarkMode } from "@/context/DarkModeContext";
+import { DarkModeContextType } from "../context/DarkModeContext";
 
 export default function Header() {
+  const { darkMode, toggleDarkMode } = useDarkMode() as DarkModeContextType;
+
   return (
     <HeaderWrapper>
       <Link href="/">HyoJeong Blog</Link>
       <div>
-        <Button>
-          <BsFillSunFill />
+        <Button onClick={toggleDarkMode}>
+          {darkMode ? <BsFillSunFill /> : <BsFillMoonStarsFill />}
         </Button>
         <Button>
           <GoSearch />
@@ -29,7 +32,6 @@ const HeaderWrapper = styled.header`
   padding: 7px 0;
   position: fixed;
   z-index: 1;
-  background-color: white;
   width: inherit;
 `;
 

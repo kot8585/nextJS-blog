@@ -3,17 +3,23 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle`
   body {
     margin: 0 auto;
-    font-family: Open-Sans, Helvetica, Sans-Serif;
+    font-family: NanumSquareRound, Open-Sans, Helvetica, Sans-Serif;
+  }
+
+  html {
+    background-color: var(--bg-main);
+    color: var(--text-main)};
   }
 
   button {
     border: 0;
     background-color: transparent;
+    color: unset;
   }
 
   a {
     text-decoration: none;
-    color: black;
+    color: unset;
   }
 
   code {
