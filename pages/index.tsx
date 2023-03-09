@@ -1,4 +1,3 @@
-import { getSortedPostsData } from "../lib/posts";
 import Helmet from "../components/Helmet";
 import PostCard from "../components/PostCard";
 import styled from "styled-components";
@@ -27,14 +26,7 @@ export default function Home({ allPostsData }: HomeProps) {
   );
 }
 
-export async function getStaticProps() {
-  const allPostsData = getSortedPostsData();
-  return {
-    props: {
-      allPostsData,
-    },
-  };
-}
+export { getStaticProps } from "../lib/getStaticProps";
 
 const Ul = styled.ul`
   list-style: none;
