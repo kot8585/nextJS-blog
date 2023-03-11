@@ -40,7 +40,7 @@ const H2 = styled.h2`
 const Span = styled.span`
   font-size: medium;
   font-weight: 300;
-  color: black;
+  color: var(--text-main);
 `;
 
 export const SmallSpan = styled.span`

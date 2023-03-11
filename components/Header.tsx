@@ -31,6 +31,8 @@ const HeaderWrapper = styled.header`
   position: fixed;
   z-index: 1;
   width: inherit;
+  background-color: var(--bg-main);
+  border-bottom: 1px solid var(--border-main);
 `;
 
 const Div = styled.div`
