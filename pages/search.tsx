@@ -28,7 +28,7 @@ export default function Search({ allPostsData }) {
   );
 }
 
-export { getStaticProps } from "../lib/getStaticProps";
+export { getStaticProps } from "../utils/getStaticProps";
 
 const Ul = styled.ul`
   list-style: none;

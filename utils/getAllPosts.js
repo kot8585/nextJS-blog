@@ -5,29 +5,36 @@ import { remark } from "remark";
 import html from "remark-html";
 import prism from "remark-prism";
 
-const postsDirectory = path.join(process.cwd(), "posts");
+const postsDirectory = path.join(process.cwd(), "pages", "posts");
 
 export function getSortedPostsData() {
   // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
-  const allPostsData = fileNames.map((fileName) => {
-    // Remove ".mdx" from file name to get id
-    const id = fileName.replace(/\.mdx$/, "");
-
-    // Read markdown file as string
-    const fullPath = path.join(postsDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, "utf8");
-
-    // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents);
-
-    // Combine the data with the id
-    return {
-      id,
-      content: matterResult.content,
-      ...matterResult.data,
-    };
+  const dirFiles = fs.readdirSync(postsDirectory, {
+    withFileTypes: true,
   });
+
+  const allPostsData = dirFiles
+    .map((file) => {
+      if (!file.name.endsWith(".mdx")) return;
+
+      // Remove ".mdx" from file name to get id
+      const id = file.name.replace(/\.mdx$/, "");
+
+      // Read markdown file as string
+      const fullPath = path.join(postsDirectory, file.name);
+      const fileContents = fs.readFileSync(fullPath, "utf8");
+
+      // Use gray-matter to parse the post metadata section
+      const matterResult = matter(fileContents);
+
+      // Combine the data with the id
+      return {
+        id,
+        content: matterResult.content,
+        ...matterResult.data,
+      };
+    })
+    .filter((post) => post);
   // Sort posts by date
   return allPostsData.sort((a, b) => {
     if (a.date < b.date) {
@@ -86,22 +93,4 @@ export async function getPostData(id) {
     contents,
     ...matterResult.data,
   };
-}
-
-export function getContents(content) {
-  // 게시물 본문을 줄바꿈 기준으로 나누고, 제목 요소인 것만 저장
-  const contents = content
-    .split(`\n`)
-    .filter((t) => t.includes("# ") && t[0] === "#")
-    .map((t) => {
-      let count = t.match(/#/g)?.length;
-      if (count) count *= 10;
-      //title의 백틱과 고액 없애줌
-      return {
-        content: t.split("# ")[1].replace(/`/g, "").replace("\\", "").trim(),
-        count,
-      };
-    });
-
-  return contents;
 }

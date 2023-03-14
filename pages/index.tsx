@@ -26,7 +26,7 @@ export default function Home({ allPostsData }: HomeProps) {
   );
 }
 
-export { getStaticProps } from "../lib/getStaticProps";
+export { getStaticProps } from "../utils/getStaticProps";
 
 const Ul = styled.ul`
   list-style: none;
