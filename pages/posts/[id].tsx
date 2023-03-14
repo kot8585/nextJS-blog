@@ -1,7 +1,12 @@
 import Date from "@/components/Date";
 import Helmet from "@/components/Helmet";
+import MDXComponents from "@/components/MDXComponents";
+import PostLayout from "@/components/PostLayout";
+import Toc from "@/components/Toc";
 import { getAllPostIds, getPostData } from "@/lib/posts";
+import { MDXProvider } from "@mdx-js/react";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Link from "next/link";
 import styled from "styled-components";
 import { SmallSpan } from "../../components/PostCard";
 
@@ -12,18 +17,24 @@ export default function Post({
     title: string;
     date: string;
     contentHtml: string;
+    contents: { content: string; count: number }[];
   };
 }) {
   return (
-    <>
-      <Helmet title={postData.title} />
-      <Title>{postData.title}</Title>
-      <SmallSpan>
-        <Date dateString={postData.date} />
-      </SmallSpan>
-      <br />
-      <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
-    </>
+    <Wrapper>
+      <article>
+        <Helmet title={postData.title} />
+        <Title>{postData.title}</Title>
+        <SmallSpan>
+          <Date dateString={postData.date} />
+        </SmallSpan>
+        <br />
+        <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+      </article>
+      {/* <nav>{postData.contents && <Toc contents={postData.contents} />}</nav> */}
+      {/* <PostLayout>{postData.contentHtml}</PostLayout> */}
+      <Link href={"/posts/_document-_app"}>에휴</Link>
+    </Wrapper>
   );
 }
 
@@ -49,4 +60,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 const Title = styled.h1`
   font-size: 32px;
   margin: 2px;
+`;
+
+const Wrapper = styled.div`
+  //media-query
+  /* display: block; */
+
+  nav {
+    /* visibility: hidden; */
+  }
 `;

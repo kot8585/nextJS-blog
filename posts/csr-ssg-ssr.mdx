@@ -1,0 +1,47 @@
+---
+title: "CSR, SSR, SSG란?"
+date: "2023-03-07"
+category: nextJs
+---
+
+NextJS를 배우게 되면서 제일 많이 보게 된 단어가 CSR, SSR, SSG였다. 각각의 뜻을 알아보고자 한다.
+
+## CSR
+
+- **외부 데이터가 필요하지 않은 페이지 부분을 정적으로 생성한 다음 페이지가 로드되면 클라이언트에서 외부 데이터를 가져오고 나머지 부분을 채운다.**
+- 이 방식은 사용자 대시보드 페이지에 적합하다.
+- 비공개의 사용자별 페이지이므로 SEO와 관련이 없으며 데이터는 자주 업데이트 되므로 요청 시 데이터를 가져와야 해서 페이지를 미리 렌더링 할 필요가 없기 때문이다.
+- `useSWR` 을 사용하기를 권장 → react-query랑은 어떻게 사용?
+  낮은 SEO
+
+---
+
+## SSR
+
+- 각 요청마다 HTML 페이지가 서버에서 만들어진다.
+- `getServerSideProps`를 통해 구현 가능
+- non-interactive page를 먼저본다.
+- 추가 설정없이는 CDN에 캐시되지 않는다.
+- 요청마다 서버에서 HTML을 만들어서 주는것
+- SSG, SSR모두 pre-renderring 방식이다.
+- 데이터가 많이 바뀌거나 요청에 따라 페이지 컨텐츠가 변경되는 경우 사용
+
+---
+
+## SSG
+
+- runtime동안 서버가 없음
+- 대신 build타임에 한번 실행됌
+- HTML을 CDN에 넣어놓고 재사용한다.
+- `getStaticProps`를 통해 구현 가능
+- getStaticProps은 query parameter나 Http Header같은 데이터를 사용할 수 없다.
+
+  - page에서만 export 가능?
+  - 왜냐면 page 렌더링을 하기 전에 모든 데이터가 필요하기 때문이다.
+  - 만약 build time대신 request time에 data를 fetch해야 한다면 SSR을 써야한다.
+
+- 빌드시 HTML을 생성하는 방식으로, 미리 렌더링 된 HTML이 각각 요청에서 재사용된다.
+- 사용자 요청 전에 페이지를 미리 렌더링 할 수 있을 때 사용
+- SSR보다 속도가 빠르기 때문에 왠만하면 이걸 사용하기
+- 외부에서 데이터를 가져올 필요가 없는 경우 자동으로 정적으로 생성된다.
+- 외부에서 데이터가 필요한 경우에는 build time에 fetching을 한 다음에 HTML페이지가 생성된다.
