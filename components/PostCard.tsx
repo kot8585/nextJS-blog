@@ -12,7 +12,7 @@ export default function PostCard({
   postData: { id, date, title },
 }: PostCardProps) {
   return (
-    <Link href={`posts/${id}`}>
+    <Link href={`/posts/${id}`}>
       <Li key={id}>
         <H2>{title}</H2>
         <Span>{id}</Span>

@@ -1,5 +1,6 @@
-import { getSortedPostsData } from "@/lib/posts";
-export async function getStaticProps() {
+import { getSortedPostsData } from "@/utils/post";
+import { GetStaticProps } from "next";
+export const getStaticProps: GetStaticProps = async () => {
   console.log("getstaticprops 실행");
   const allPostsData = getSortedPostsData();
   return {
@@ -7,4 +8,4 @@ export async function getStaticProps() {
       allPostsData,
     },
   };
-}
+};

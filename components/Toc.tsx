@@ -5,16 +5,16 @@ type TocProps = {
   count: number;
 }[];
 
-export default function Toc({ contents }) {
+export default function Toc({ headings }) {
   return (
-    <ul>
-      {contents.map((con) => {
+    <ol>
+      {headings.map((heading) => {
         return (
-          <li key={con.content}>
-            <a href={`#${con.content}`}>{con.content}</a>
+          <li key={heading.content}>
+            <a href={heading.link}>{heading.content}</a>
           </li>
         );
       })}
-    </ul>
+    </ol>
   );
 }

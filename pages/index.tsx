@@ -1,6 +1,6 @@
 import Helmet from "../components/Helmet";
-import PostCard from "../components/PostCard";
 import styled from "styled-components";
+import PostCard from "@/components/PostCard";
 
 type HomeProps = {
   allPostsData: PostData[];

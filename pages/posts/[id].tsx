@@ -1,72 +1,39 @@
-import Date from "@/components/Date";
-import Helmet from "@/components/Helmet";
-import MDXComponents from "@/components/MDXComponents";
-import PostLayout from "@/components/PostLayout";
 import Toc from "@/components/Toc";
-import { getAllPostIds, getPostData } from "@/lib/posts";
-import { MDXProvider } from "@mdx-js/react";
-import { GetStaticPaths, GetStaticProps } from "next";
-import Link from "next/link";
-import styled from "styled-components";
-import { SmallSpan } from "../../components/PostCard";
+import { getAllPostIds, getPostData } from "@/utils/post";
+import { MDXRemote } from "next-mdx-remote";
 
-export default function Post({
-  postData,
-}: {
-  postData: {
-    title: string;
-    date: string;
-    contentHtml: string;
-    contents: { content: string; count: number }[];
-  };
-}) {
+import MDXComponents from "../../components/MDXComponents";
+
+export default function PostPage({ source, frontMatter, contents }) {
   return (
-    <Wrapper>
-      <article>
-        <Helmet title={postData.title} />
-        <Title>{postData.title}</Title>
-        <SmallSpan>
-          <Date dateString={postData.date} />
-        </SmallSpan>
-        <br />
-        <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
-      </article>
-      {/* <nav>{postData.contents && <Toc contents={postData.contents} />}</nav> */}
-      {/* <PostLayout>{postData.contentHtml}</PostLayout> */}
-      <Link href={"/posts/_document-_app"}>에휴</Link>
-    </Wrapper>
+    <>
+      <Toc headings={contents} />
+      <div className="post-header">
+        <h1>{frontMatter.title}</h1>
+        {/* {frontMatter.description && (
+          <p className="description">{frontMatter.description}</p>
+        )} */}
+      </div>
+      <main>
+        <MDXRemote {...source} components={MDXComponents} />
+      </main>
+    </>
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  //id로 사용 가능한 배열을 리턴해야 한다.
+export const getStaticProps = async ({ params }) => {
+  const post = await getPostData(params.id);
+
+  return {
+    props: { ...post },
+  };
+};
+
+export const getStaticPaths = async () => {
   const paths = getAllPostIds();
+
   return {
     paths,
     fallback: false,
   };
 };
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  //id를 사용해서 fetch할 데이터들
-  const postData = await getPostData(params?.id as string);
-  return {
-    props: {
-      postData,
-    },
-  };
-};
-
-const Title = styled.h1`
-  font-size: 32px;
-  margin: 2px;
-`;
-
-const Wrapper = styled.div`
-  //media-query
-  /* display: block; */
-
-  nav {
-    /* visibility: hidden; */
-  }
-`;

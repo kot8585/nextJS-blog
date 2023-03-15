@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import PostCard from "../components/PostCard";
 import Helmet from "../components/Helmet";
 import styled from "styled-components";
+import PostCard from "@/components/PostCard";
 
 export default function Search({ allPostsData }) {
   const router = useRouter();
