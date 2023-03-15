@@ -1,5 +1,5 @@
 import Toc from "@/components/Toc";
-import { getAllPostIds, getPostData } from "@/utils/post";
+import { getAllPostIds, getPostData, postIds } from "@/utils/post";
 import { MDXRemote } from "next-mdx-remote";
 
 import MDXComponents from "../../components/MDXComponents";
@@ -21,7 +21,7 @@ export default function PostPage({ source, frontMatter, contents }) {
   );
 }
 
-export const getStaticProps = async ({ params }) => {
+export const getStaticProps = async ({ params }: postIds) => {
   const post = await getPostData(params.id);
 
   return {
