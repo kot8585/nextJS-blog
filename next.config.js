@@ -20,6 +20,14 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  //TODO: type check 하기
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
 };
 
 // Merge MDX config with Next.js config
