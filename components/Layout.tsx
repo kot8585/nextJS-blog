@@ -20,7 +20,7 @@ const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 95%;
+  width: 100%;
   margin: 0 auto;
 `;
 

@@ -19,6 +19,7 @@ export default function Toc({ headings }) {
 const Wrapper = styled.ol`
   display: none;
   align-self: flex-start;
+  width: 350px;
   li {
     padding-top: 4px;
   }

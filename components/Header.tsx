@@ -27,12 +27,16 @@ const HeaderWrapper = styled.header`
   justify-content: space-between;
   font-size: 26px;
   font-weight: bold;
-  padding: 7px 0;
+  padding: 7px 15px;
   position: fixed;
   z-index: 1;
   width: inherit;
   background-color: var(--bg-main);
   border-bottom: 1px solid var(--border-main);
+
+  a:hover {
+    text-decoration: none;
+  }
 `;
 
 const Div = styled.div`
