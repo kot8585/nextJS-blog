@@ -20,7 +20,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  //TODO: type check 하기
+
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if

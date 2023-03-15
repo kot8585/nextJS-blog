@@ -1,13 +1,10 @@
+import device from "@/styles/device";
 import React from "react";
-
-type TocProps = {
-  content: string;
-  count: number;
-}[];
+import styled from "styled-components";
 
 export default function Toc({ headings }) {
   return (
-    <ol>
+    <Wrapper>
       {headings.map((heading) => {
         return (
           <li key={heading.content}>
@@ -15,6 +12,21 @@ export default function Toc({ headings }) {
           </li>
         );
       })}
-    </ol>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.ol`
+  display: none;
+  align-self: flex-start;
+  li {
+    padding-top: 4px;
+  }
+
+  @media ${device.laptopL} {
+    position: sticky;
+    display: block;
+    list-style: none;
+    top: 150px;
+  }
+`;

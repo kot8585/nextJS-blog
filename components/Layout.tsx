@@ -1,3 +1,4 @@
+import device from "@/styles/device";
 import React from "react";
 import styled from "styled-components";
 import Header from "./Header";
@@ -19,13 +20,17 @@ const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 768px;
+  width: 95%;
   margin: 0 auto;
 `;
 
 const Main = styled.main`
   margin-top: 50px;
   display: flex;
-  flex-direction: column;
+  padding: 5px;
   width: 100%;
+
+  @media ${device.tablet} {
+    width: 80%;
+  }
 `;

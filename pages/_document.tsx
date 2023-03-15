@@ -13,7 +13,7 @@ export default function Document() {
   `;
   return (
     <Html>
-      <Head />
+      <Head></Head>
       <body>
         <script dangerouslySetInnerHTML={{ __html: setThemeMode }} />
         <Main />

@@ -1,6 +1,7 @@
 import Toc from "@/components/Toc";
 import { getAllPostIds, getPostData, FrontMatter, postIds } from "@/utils/post";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import styled from "styled-components";
 
 import MDXComponents from "../../components/MDXComponents";
 
@@ -13,16 +14,16 @@ type Props = {
 export default function PostPage({ source, frontMatter, contents }: Props) {
   return (
     <>
-      <Toc headings={contents} />
-      <div className="post-header">
-        <h1>{frontMatter.title}</h1>
-        {/* {frontMatter.description && (
-          <p className="description">{frontMatter.description}</p>
-        )} */}
-      </div>
-      <main>
+      <Article>
+        <div className="post-header">
+          <h1>{frontMatter.title}</h1>
+          {/* {frontMatter.description && (
+            <p className="description">{frontMatter.description}</p>
+          )} */}
+        </div>
         <MDXRemote {...source} components={MDXComponents} />
-      </main>
+      </Article>
+      <Toc headings={contents} />
     </>
   );
 }
@@ -43,3 +44,8 @@ export const getStaticPaths = async () => {
     fallback: false,
   };
 };
+
+const Article = styled.article`
+  margin: 0 auto;
+  width: 100%;
+`;

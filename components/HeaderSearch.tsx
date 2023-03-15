@@ -45,11 +45,12 @@ const Div = styled.div<SearchProps>`
   display: flex;
   justify-content: end;
   position: relative;
-  width: ${(props) => (props.isClicked || props.text ? "50%" : "7%")};
+  width: ${(props) => (props.isClicked || props.text ? "40%" : "20px")};
+  max-width: 300px;
 
   .input {
     width: 100%;
-    height: 25px;
+    height: 30px;
     visibility: ${(props) =>
       props.isClicked || props.text ? "visible" : "hidden"};
     padding-left: 35px;
@@ -58,6 +59,7 @@ const Div = styled.div<SearchProps>`
   .logo {
     position: absolute;
     left: 5px;
-    top: 3px;
+    top: 5px;
+    font-size: 24px;
   }
 `;

@@ -21,6 +21,7 @@ export const GlobalStyle = createGlobalStyle`
 
   * {
     box-sizing: border-box;
+    word-break:break-all
   }
 
   html {
@@ -57,8 +58,8 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   a:hover {
-  text-decoration: underline;
-}
+   text-decoration: underline;
+  }
 
 
   code {
@@ -76,6 +77,8 @@ export const GlobalStyle = createGlobalStyle`
   pre > code {
     border: 0px;
     background-color: transparent;
+    width: inherit;
+    display: block;
   }
 
   img {
@@ -87,7 +90,7 @@ export const GlobalStyle = createGlobalStyle`
 
   input {
     background-color: var(--bg-sub);
-    border: none;
+    border: 1px solid black;
     padding: 3px;
     border-radius: 5px;
   }

@@ -40,9 +40,10 @@ const Div = styled.div`
   align-items: center;
   flex-grow: 1;
   justify-content: end;
+  gap: 0 15px;
 `;
 
 const Button = styled.button`
-  font-size: 20px;
+  font-size: 24px;
   line-height: 13px;
 `;
