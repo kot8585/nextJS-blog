@@ -1,18 +1,12 @@
 import Helmet from "../components/Helmet";
 import styled from "styled-components";
 import PostCard from "@/components/PostCard";
+import { PostData } from "@/utils/post";
 
-type HomeProps = {
+type Props = {
   allPostsData: PostData[];
 };
-
-export type PostData = {
-  id: string;
-  date: string;
-  title: string;
-};
-
-export default function Home({ allPostsData }: HomeProps) {
+export default function Home({ allPostsData }: Props) {
   return (
     <>
       <Helmet title="Home" />

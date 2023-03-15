@@ -1,23 +1,22 @@
 import React from "react";
 import Date from "@/components/Date";
-import { PostData } from "../pages/index";
 import styled from "styled-components";
 import Link from "next/link";
+import { PostData } from "@/utils/post";
 
-type PostCardProps = {
+type Props = {
   postData: PostData;
 };
-
 export default function PostCard({
-  postData: { id, date, title },
-}: PostCardProps) {
+  postData: { id, content, frontMatter },
+}: Props) {
   return (
     <Link href={`/posts/${id}`}>
       <Li key={id}>
-        <H2>{title}</H2>
+        <H2>{frontMatter.title}</H2>
         <Span>{id}</Span>
         <SmallSpan>
-          <Date dateString={date} />
+          <Date dateString={frontMatter.date} />
         </SmallSpan>
       </Li>
     </Link>

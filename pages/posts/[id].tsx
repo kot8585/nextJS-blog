@@ -1,10 +1,16 @@
 import Toc from "@/components/Toc";
-import { getAllPostIds, getPostData, postIds } from "@/utils/post";
-import { MDXRemote } from "next-mdx-remote";
+import { getAllPostIds, getPostData, FrontMatter, postIds } from "@/utils/post";
+import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 
 import MDXComponents from "../../components/MDXComponents";
 
-export default function PostPage({ source, frontMatter, contents }) {
+type Props = {
+  source: MDXRemoteSerializeResult;
+  frontMatter: FrontMatter;
+  contents: { content: string; link: string };
+};
+
+export default function PostPage({ source, frontMatter, contents }: Props) {
   return (
     <>
       <Toc headings={contents} />

@@ -3,10 +3,23 @@ import path from "path";
 import matter from "gray-matter";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeHighlight from "rehype-highlight";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
-export function getSortedPostsData() {
+export type FrontMatter = {
+  title: string;
+  date: string;
+  category: string;
+};
+
+export type PostData = {
+  id: string;
+  content: string;
+  frontMatter: FrontMatter;
+};
+
+export function getSortedPostsData(): PostData[] {
   // Get file names under /posts
   const fileNames = fs.readdirSync(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
@@ -18,18 +31,17 @@ export function getSortedPostsData() {
     const fileContents = fs.readFileSync(fullPath, "utf8");
 
     // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents);
+    const { data, content } = matter(fileContents);
 
-    // Combine the data with the id
     return {
       id,
-      content: matterResult.content,
-      ...matterResult.data,
+      content: content,
+      frontMatter: data as FrontMatter,
     };
   });
   // Sort posts by date
   return allPostsData.sort((a, b) => {
-    if (a.date < b.date) {
+    if (a.frontMatter.date < b.frontMatter.date) {
       return 1;
     } else {
       return -1;
@@ -78,7 +90,7 @@ export async function getPostData(id: string) {
 
   const contents = getContents(content);
 
-  const mdxSource = await serialize(content, {
+  const mdxSource: MDXRemoteSerializeResult = await serialize(content, {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [],
@@ -89,7 +101,7 @@ export async function getPostData(id: string) {
 
   return {
     source: mdxSource,
-    frontMatter: data,
+    frontMatter: data as FrontMatter,
     contents,
   };
 }
