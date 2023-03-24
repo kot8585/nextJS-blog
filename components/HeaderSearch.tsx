@@ -1,3 +1,5 @@
+"use client";
+
 import { GoSearch } from "react-icons/go";
 import styled from "styled-components";
 import { ChangeEvent, useState } from "react";

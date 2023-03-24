@@ -1,3 +1,5 @@
+import Date from "@/components/Date";
+import Helmet from "@/components/Helmet";
 import Toc from "@/components/Toc";
 import { getAllPostIds, getPostData, FrontMatter, postIds } from "@/utils/post";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -14,13 +16,16 @@ type Props = {
 export default function PostPage({ source, frontMatter, contents }: Props) {
   return (
     <>
+      <Helmet title={frontMatter.title} />
+
       <Article>
         <div className="post-header">
           <h1>{frontMatter.title}</h1>
-          {/* {frontMatter.description && (
-            <p className="description">{frontMatter.description}</p>
-          )} */}
+          <span>
+            <Date dateString={frontMatter.date} />
+          </span>
         </div>
+        <hr />
         <MDXRemote {...source} components={MDXComponents} />
       </Article>
       <Toc headings={contents} />
@@ -41,7 +46,6 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
   };
 };
 

@@ -1,3 +1,5 @@
+"use client";
+
 import device from "@/styles/device";
 import React from "react";
 import styled from "styled-components";

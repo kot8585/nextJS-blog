@@ -1,4 +1,3 @@
-import Layout from "@/components/Layout";
 import { AppProps } from "next/app";
 import { GlobalStyle } from "../styles/global-styles";
 import { DarkModeProvider } from "../context/DarkModeContext";
@@ -10,9 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <DarkModeProvider>
       <GlobalStyle />
       <QueryClientProvider client={queryClient}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Component {...pageProps} />
       </QueryClientProvider>
     </DarkModeProvider>
   );

@@ -1,53 +1,39 @@
-import { BsFillSunFill, BsFillMoonStarsFill } from "react-icons/bs";
+"use client";
+
+import { BsFillSunFill, BsSearch } from "react-icons/bs";
+import { FaRegMoon } from "react-icons/fa";
+import { GiHamburgerMenu } from "react-icons/gi";
 import Link from "next/link";
-import styled from "styled-components";
 import { useDarkMode } from "@/context/DarkModeContext";
 import { DarkModeContextType } from "../context/DarkModeContext";
-import HeaderSearch from "./HeaderSearch";
+import { useRouter } from "next/navigation";
+
+const DIV_CLASS = "flex items-center gap-2 text-3xl font-bold";
 
 export default function Header() {
   const { darkMode, toggleDarkMode } = useDarkMode() as DarkModeContextType;
+  const router = useRouter();
 
   return (
-    <HeaderWrapper>
-      <Link href="/">HyoJeong Blog</Link>
-      <Div>
-        <HeaderSearch />
-        <Button onClick={toggleDarkMode}>
-          {darkMode ? <BsFillSunFill /> : <BsFillMoonStarsFill />}
-        </Button>
-      </Div>
-    </HeaderWrapper>
+    <header className="flex justify-between fixed z-10 w-full text-xl p-2 backdrop-blur-md backdrop-bgMain">
+      <div className={DIV_CLASS}>
+        <button>
+          <GiHamburgerMenu />
+        </button>
+        <Link href="/">MOON.DEV</Link>
+      </div>
+      <div className={DIV_CLASS}>
+        <button>
+          <BsSearch
+            onClick={() => {
+              router.push("/search");
+            }}
+          />
+        </button>
+        <button onClick={toggleDarkMode}>
+          {darkMode ? <BsFillSunFill /> : <FaRegMoon />}
+        </button>
+      </div>
+    </header>
   );
 }
-
-const HeaderWrapper = styled.header`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  font-size: 26px;
-  font-weight: bold;
-  padding: 7px 15px;
-  position: fixed;
-  z-index: 1;
-  width: inherit;
-  background-color: var(--bg-main);
-  border-bottom: 1px solid var(--border-main);
-
-  a:hover {
-    text-decoration: none;
-  }
-`;
-
-const Div = styled.div`
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-  justify-content: end;
-  gap: 0 15px;
-`;
-
-const Button = styled.button`
-  font-size: 24px;
-  line-height: 13px;
-`;
