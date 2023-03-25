@@ -1,20 +1,19 @@
 import Date from "@/components/Date";
 import Helmet from "@/components/Helmet";
-import MDXComponents from "@/components/MDXComponents";
+import { MdxContent } from "@/components/MdxContent";
 import Toc from "@/components/Toc";
-import { getAllPostIds, getPostData, FrontMatter, postIds } from "@/utils/post";
-import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import {
+  getAllPostIds,
+  FrontMatter,
+  postIds,
+  getPost,
+  getPostData,
+} from "@/utils/post";
 
 type Props = {
   params: {
     id: string;
   };
-};
-
-type MdxPostData = {
-  source: MDXRemoteSerializeResult;
-  frontMatter: FrontMatter;
-  contents: { content: string; link: string };
 };
 
 export default async function PostPage({ params: { id } }: Props) {
@@ -32,7 +31,7 @@ export default async function PostPage({ params: { id } }: Props) {
           </span>
         </div>
         <hr />
-        <MDXRemote {...source} components={MDXComponents} />
+        <MdxContent source={source} />
       </article>
       <Toc headings={contents} />
     </>

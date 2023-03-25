@@ -1,4 +1,5 @@
 import fs from "fs";
+import { readFile } from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 import { serialize } from "next-mdx-remote/serialize";
@@ -19,6 +20,34 @@ export type PostData = {
   content: string;
   frontMatter: FrontMatter;
 };
+
+export type Post<TFrontmatter> = {
+  serialized: MDXRemoteSerializeResult;
+  frontmatter: TFrontmatter;
+};
+
+export async function getPost(id: string): Promise<Post<FrontMatter>> {
+  // Read the file from the filesystem
+  const postFilePath = path.join(
+    path.join(process.cwd(), "posts"),
+    `${id}.mdx`
+  );
+  const raw = await readFile(postFilePath, "utf-8");
+
+  // Serialize the MDX content and parse the frontmatter
+  const serialized = await serialize(raw, {
+    parseFrontmatter: true,
+  });
+
+  // Typecast the frontmatter to the correct type
+  const frontmatter = serialized.frontmatter as FrontMatter;
+
+  // Return the serialized content and frontmatter
+  return {
+    frontmatter,
+    serialized,
+  };
+}
 
 export function getSortedPostsData(): PostData[] {
   // Get file names under /posts
@@ -58,19 +87,6 @@ export type postIds = {
 export function getAllPostIds() {
   const fileNames = fs.readdirSync(postsDirectory);
 
-  // Returns an array that looks like this:
-  // [
-  //   {
-  //     params: {
-  //       id: 'ssg-ssr'
-  //     }
-  //   },
-  //   {
-  //     params: {
-  //       id: 'pre-rendering'
-  //     }
-  //   }
-  // ]
   return fileNames.map((fileName) => {
     return {
       params: {
