@@ -13,6 +13,7 @@ export type FrontMatter = {
   date: string;
   category: string;
   description: string;
+  image: string;
 };
 
 export type PostData = {

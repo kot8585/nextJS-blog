@@ -1,14 +1,9 @@
+import Banner from "@/components/Banner";
 import Date from "@/components/Date";
 import Helmet from "@/components/Helmet";
 import { MdxContent } from "@/components/MdxContent";
 import Toc from "@/components/Toc";
-import {
-  getAllPostIds,
-  FrontMatter,
-  postIds,
-  getPost,
-  getPostData,
-} from "@/utils/post";
+import { getAllPostIds, getPostData } from "@/utils/post";
 
 type Props = {
   params: {
@@ -23,14 +18,13 @@ export default async function PostPage({ params: { id } }: Props) {
     <>
       <Helmet title={frontMatter.title} />
 
-      <article>
-        <div className="post-header">
-          <h1>{frontMatter.title}</h1>
-          <span>
-            <Date dateString={frontMatter.date} />
-          </span>
-        </div>
-        <hr />
+      <article className="h-full">
+        <Banner
+          title={frontMatter.title}
+          url={frontMatter.image}
+          date={frontMatter.date}
+          category={frontMatter.category}
+        />
         <MdxContent source={source} />
       </article>
       <Toc headings={contents} />
