@@ -30,12 +30,13 @@ export default function SearchPosts({ posts }: Props) {
       <Helmet title="Home" />
       <div className="w-full relative">
         <input
-          className="w-full h-13 p-2 pl-10"
+          className="w-full h-14 p-2 pl-12 bg-bgSub text-xl outline-none focus:border"
           placeholder="검색어를 입력해주세요"
           value={text}
           onChange={handleChange}
+          autoFocus
         />
-        <GoSearch className="absolute left-3 top-3 text-xl" />
+        <GoSearch className="absolute left-3 top-4 text-2xl" />
       </div>
       <p className="py-5">
         {filterPostData &&
