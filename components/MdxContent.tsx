@@ -21,5 +21,11 @@ const MdxComponents = {
 };
 
 export function MdxContent({ source }: MdxContentProps) {
-  return <MDXRemote {...source} components={MdxComponents} />;
+  return (
+    <MDXRemote
+      {...source}
+      components={MdxComponents}
+      className="prose lg:prose-xl"
+    />
+  );
 }

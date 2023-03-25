@@ -19,11 +19,6 @@ html.dark {
   --bg-code: #16181d;
   --text-pointer: #149eca;
 }
-/* 
-* {
-  box-sizing: border-box;
-  word-break: break-all
-} */
 
 html {
   background-color: var(--bg-main);
@@ -36,53 +31,3 @@ body {
   overflow-y: auto;
 }
 
-/* h1 {
-  font-size: 2.5rem;
-  line-height: 1.2;
-  font-weight: 800;
-  letter-spacing: -0.05rem;
-  margin: 1rem 0;
-}
-
-button {
-  border: 0;
-  background-color: transparent;
-  color: unset;
-}
-
-a {
-  text-decoration: none;
-  color: unset;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-
-code {
-  border: none;
-  overflow: auto;
-  border-radius: 7px;
-}
-
-pre {
-  padding: 7px;
-  background-color: var(--bg-code);
-  border-radius: 15px;
-}
-
-pre>code {
-  border: 0px;
-  background-color: transparent;
-  width: inherit;
-  display: block;
-}
-
-
-input {
-  background-color: var(--bg-sub);
-  border: 1px solid black;
-  padding: 3px;
-  border-radius: 5px;
-} */

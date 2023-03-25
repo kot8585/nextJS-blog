@@ -5,6 +5,7 @@ import matter from "gray-matter";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeHighlight from "rehype-highlight";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import remarkGfm from "remark-gfm";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
@@ -111,7 +112,7 @@ export async function getPostData(id: string) {
   const mdxSource: MDXRemoteSerializeResult = await serialize(content, {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
-      remarkPlugins: [],
+      remarkPlugins: [remarkGfm],
       rehypePlugins: [rehypeHighlight],
     },
     scope: data,

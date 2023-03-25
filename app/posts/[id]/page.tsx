@@ -1,5 +1,4 @@
 import Banner from "@/components/Banner";
-import Date from "@/components/Date";
 import Helmet from "@/components/Helmet";
 import { MdxContent } from "@/components/MdxContent";
 import Toc from "@/components/Toc";
@@ -18,16 +17,20 @@ export default async function PostPage({ params: { id } }: Props) {
     <>
       <Helmet title={frontMatter.title} />
 
-      <article className="h-full">
+      <article className="h-full mx-auto">
         <Banner
           title={frontMatter.title}
           url={frontMatter.image}
           date={frontMatter.date}
           category={frontMatter.category}
         />
-        <MdxContent source={source} />
+        <section className="max-w-none flex relative gap-8 justify-center px-5 dark:prose-invert prose lg:prose-xl">
+          <section className="xl:w-3/4 ">
+            <MdxContent source={source} />
+          </section>
+          <Toc headings={contents} />
+        </section>
       </article>
-      <Toc headings={contents} />
     </>
   );
 }
