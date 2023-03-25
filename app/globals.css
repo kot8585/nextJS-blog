@@ -19,26 +19,24 @@ html.dark {
   --bg-code: #16181d;
   --text-pointer: #149eca;
 }
-
+/* 
 * {
   box-sizing: border-box;
   word-break: break-all
-}
+} */
 
 html {
   background-color: var(--bg-main);
   color: var(--text-main);
 }
 
+html,
 body {
-  margin: 0 auto;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", 나눔고딕, "Nanum Gothic", "Noto Sans KR", "Noto Sans CJK KR", arial, 돋움, Dotum, Tahoma, Geneva, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   height: 100vh;
+  overflow-y: auto;
 }
 
-h1 {
+/* h1 {
   font-size: 2.5rem;
   line-height: 1.2;
   font-weight: 800;
@@ -87,4 +85,4 @@ input {
   border: 1px solid black;
   padding: 3px;
   border-radius: 5px;
-}
+} */

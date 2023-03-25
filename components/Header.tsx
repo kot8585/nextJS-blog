@@ -15,7 +15,7 @@ export default function Header() {
   const router = useRouter();
 
   return (
-    <header className="flex justify-between fixed z-10 w-full text-xl p-2 backdrop-blur-md backdrop-bgMain">
+    <header className="flex left-0 top-0 justify-between sticky z-20 text-xl p-2 backdrop-blur-md backdrop-bgMain h-14">
       <div className={DIV_CLASS}>
         <button>
           <GiHamburgerMenu />

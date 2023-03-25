@@ -1,12 +1,10 @@
 "use client";
 
-import device from "@/styles/device";
 import React from "react";
-import styled from "styled-components";
 
 export default function Toc({ headings }) {
   return (
-    <Wrapper>
+    <ol>
       {headings.map((heading) => {
         return (
           <li key={heading.content}>
@@ -14,22 +12,6 @@ export default function Toc({ headings }) {
           </li>
         );
       })}
-    </Wrapper>
+    </ol>
   );
 }
-
-const Wrapper = styled.ol`
-  display: none;
-  align-self: flex-start;
-  width: 350px;
-  li {
-    padding-top: 4px;
-  }
-
-  @media ${device.laptopL} {
-    position: sticky;
-    display: block;
-    list-style: none;
-    top: 150px;
-  }
-`;

@@ -18,11 +18,11 @@ export default function RootLayout({
   `;
   return (
     <html lang="en">
-      <body className="flex flex-col w-full max-w-screen-xl mx-auto">
+      <body className="flex flex-col w-full max-w-screen-2xl mx-auto relative">
         <script dangerouslySetInnerHTML={{ __html: setThemeMode }} />
         <DarkModeProvider>
           <Header />
-          <main className="h-full">{children}</main>
+          <main className="h-full w-full absolute">{children}</main>
         </DarkModeProvider>
       </body>
     </html>
