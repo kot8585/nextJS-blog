@@ -5,6 +5,7 @@ import { ChangeEvent, useState } from "react";
 import { PostData } from "../utils/post";
 import PostCard from "./PostCard";
 import Helmet from "./Helmet";
+import PostsGrid from "./PostsGrid";
 
 type Props = {
   posts: PostData[];
@@ -44,12 +45,8 @@ export default function SearchPosts({ posts }: Props) {
             ? `총 ${filterPostData.length}개의 포스트를 찾았습니다.`
             : "검색 결과가 없습니다.")}
       </p>
-      <ul>
-        {filterPostData &&
-          filterPostData.map((postData) => (
-            <PostCard postData={postData} key={postData.id} />
-          ))}
-      </ul>
+      {/* TODO: postList 만들기 */}
+      <ul>{filterPostData && <PostsGrid posts={filterPostData} />}</ul>
     </section>
   );
 }

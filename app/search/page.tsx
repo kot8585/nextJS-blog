@@ -1,8 +1,8 @@
 import { getSortedPostsData } from "../../utils/post";
 import SearchPosts from "@/components/SearchPosts";
 
-export default function SearchPage() {
-  const posts = getSortedPostsData();
+export default async function SearchPage() {
+  const posts = await getSortedPostsData();
   return (
     <>
       <SearchPosts posts={posts} />
