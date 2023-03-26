@@ -20,12 +20,12 @@ export default async function PostPage({ params: { id } }: Props) {
       <article className="h-full mx-auto">
         <Banner
           title={frontMatter.title}
-          url={frontMatter.image}
+          url={frontMatter.imageUrl}
           date={frontMatter.date}
           category={frontMatter.category}
         />
         <section className="max-w-none flex relative gap-8 justify-center px-5 dark:prose-invert prose lg:prose-xl">
-          <section className="xl:w-3/4 ">
+          <section className="xl:w-3/4">
             <MdxContent source={source} />
           </section>
           <Toc headings={contents} />

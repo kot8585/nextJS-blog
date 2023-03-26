@@ -1,5 +1,5 @@
 import fs from "fs";
-import { readFile } from "fs/promises";
+import { readFile, readdir } from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 import { serialize } from "next-mdx-remote/serialize";
@@ -14,7 +14,7 @@ export type FrontMatter = {
   date: string;
   category: string;
   description: string;
-  image: string;
+  imageUrl: string;
 };
 
 export type PostData = {
@@ -51,9 +51,9 @@ export async function getPost(id: string): Promise<Post<FrontMatter>> {
   };
 }
 
-export function getSortedPostsData(): PostData[] {
+export async function getSortedPostsData(): Promise<PostData[]> {
   // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
+  const fileNames = await readdir(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
     // Remove ".md" from file name to get id
     const id = fileName.replace(/\.mdx$/, "");
@@ -86,8 +86,8 @@ export type postIds = {
     id: string;
   };
 };
-export function getAllPostIds() {
-  const fileNames = fs.readdirSync(postsDirectory);
+export async function getAllPostIds() {
+  const fileNames = await readdir(postsDirectory);
 
   return fileNames.map((fileName) => {
     return {
@@ -103,7 +103,7 @@ export async function getPostData(id: string) {
     path.join(process.cwd(), "posts"),
     `${id}.mdx`
   );
-  const source = fs.readFileSync(postFilePath);
+  const source = await readFile(postFilePath);
 
   const { content, data } = matter(source);
 
