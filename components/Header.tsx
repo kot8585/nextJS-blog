@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useRecoilState } from "recoil";
 import { clickedSideBarAtom } from "@/state/ClickedSideBarAtom";
 
-const DIV_CLASS = "flex items-center gap-2 text-3xl font-bold";
+const DIV_CLASS = "flex items-center text-3xl font-bold";
 
 export default function Header() {
   const { darkMode, toggleDarkMode } = useDarkMode() as DarkModeContextType;
@@ -29,17 +29,22 @@ export default function Header() {
             />
           }
         </button>
-        <Link href="/">MOON.DEV</Link>
+        <Link href="/" className="ml-2">
+          MOON.DEV
+        </Link>
       </div>
       <div className={DIV_CLASS}>
-        <button>
+        <button className="hover:bg-bgSub p-1 rounded-full">
           <BsSearch
             onClick={() => {
               router.push("/search");
             }}
           />
         </button>
-        <button onClick={toggleDarkMode}>
+        <button
+          className="hover:bg-bgSub p-1 rounded-full "
+          onClick={toggleDarkMode}
+        >
           {darkMode ? <BsFillSunFill /> : <FaRegMoon />}
         </button>
       </div>

@@ -8,7 +8,7 @@
   --bg-sub: #e8e8e8;
   --border-main: #dedede;
   --bg-code: #ffffff;
-  --text-pointer: #0a7ea4;
+  --brand-main: #f08c00;
 }
 
 html.dark {
@@ -17,7 +17,7 @@ html.dark {
   --text-main: #f6f7f9;
   --border-main: #343a46;
   --bg-code: #16181d;
-  --text-pointer: #149eca;
+  --brand-main: #fab005;
 }
 
 html {

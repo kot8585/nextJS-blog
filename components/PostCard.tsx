@@ -13,7 +13,7 @@ export default async function PostCard({
 }: Props) {
   return (
     <Link href={`/posts/${id}`}>
-      <article className="rounded-md overflow-hidden shadow-md hover:shadow-xl">
+      <article className="rounded-md overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1">
         <Image
           className="w-full aspect-video"
           src={frontMatter.imageUrl}
@@ -28,10 +28,14 @@ export default async function PostCard({
           <p className="w-full h-12 text-center line-clamp-2">
             {frontMatter.description}
           </p>
-          <span className="text-sm rounded-lg bg-green-100 px-2 my-2">
-            {frontMatter.category}
-          </span>
-          <Date dateString={frontMatter.date} />
+          <div className="flex items-center">
+            <div className="m-2 p-[1px] rounded-full bg-gradient-to-r from-middle to-end ">
+              <div className="bg-bgMain rounded-full px-2 ">
+                {frontMatter.category}
+              </div>
+            </div>
+            <Date dateString={frontMatter.date} />
+          </div>
         </div>
       </article>
     </Link>

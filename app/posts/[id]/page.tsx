@@ -25,7 +25,7 @@ export default async function PostPage({ params: { id } }: Props) {
           category={frontMatter.category}
         />
         <section className="max-w-none flex relative gap-8 justify-center px-5 dark:prose-invert prose lg:prose-xl">
-          <section className="xl:w-3/4">
+          <section className="xl:w-3/4 w-full">
             <MdxContent source={source} />
           </section>
           <Toc headings={headings} />

@@ -25,7 +25,7 @@ export default function SideBar({ posts }: Props) {
 
   return (
     <aside
-      className={`lg:w-1/5  h-full z-20 fixed top-30 flex-col backdrop-blur-xl backdrop-bgMain ${
+      className={`lg:w-1/5  h-full z-20 fixed top-30 flex-col bg-bgMain p-2 ${
         isClicked ? "flex" : "hidden"
       }`}
     >
@@ -36,9 +36,12 @@ export default function SideBar({ posts }: Props) {
               key={category}
               href={`/posts/category/${category}`}
               onClick={() => setIsClicked(false)}
+              className="hover:-translate-y-0.5"
             >
-              <span>{category}</span>
-              <span>{categoryCount[category]}</span>
+              <span className="text-xl">{category}</span>
+              <span className="ml-2 border border-brandMain px-2 text-xs rounded-full text-brandMain">
+                {categoryCount[category]}
+              </span>
             </Link>
           );
         })}

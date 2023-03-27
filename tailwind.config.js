@@ -7,11 +7,16 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    colors: {
-      bgMain: "var(--bg-main)",
-      bgSub: "var(--bg-sub)",
+    extend: {
+      colors: {
+        bgMain: "var(--bg-main)",
+        bgSub: "var(--bg-sub)",
+        brandMain: "var(--brand-main)",
+        start: "#FF6F91",
+        middle: "#FF9671",
+        end: "#FFC75F",
+      },
     },
-    extend: {},
   },
   plugins: [
     require("@tailwindcss/typography"),
