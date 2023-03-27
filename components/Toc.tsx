@@ -7,8 +7,8 @@ export default function Toc({ headings }) {
     <ol className="hidden xl:w-1/4 sticky top-20 self-start xl:block">
       {headings.map((heading) => {
         return (
-          <li key={heading.content}>
-            <a href={heading.link}>{heading.content}</a>
+          <li key={heading.text}>
+            <a href={heading.link}>{heading.text}</a>
           </li>
         );
       })}

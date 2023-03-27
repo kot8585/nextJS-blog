@@ -20,7 +20,6 @@ export default function SearchPosts({ posts }: Props) {
       post.content.toLowerCase().includes(text)
     );
   }
-  console.log("filterPostData", !!filterPostData);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);

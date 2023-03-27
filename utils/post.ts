@@ -23,33 +23,16 @@ export type PostData = {
   frontMatter: FrontMatter;
 };
 
-export type Post<TFrontmatter> = {
-  serialized: MDXRemoteSerializeResult;
-  frontmatter: TFrontmatter;
+type Heading = {
+  text: string;
+  link: string;
 };
 
-export async function getPost(id: string): Promise<Post<FrontMatter>> {
-  // Read the file from the filesystem
-  const postFilePath = path.join(
-    path.join(process.cwd(), "posts"),
-    `${id}.mdx`
-  );
-  const raw = await readFile(postFilePath, "utf-8");
-
-  // Serialize the MDX content and parse the frontmatter
-  const serialized = await serialize(raw, {
-    parseFrontmatter: true,
-  });
-
-  // Typecast the frontmatter to the correct type
-  const frontmatter = serialized.frontmatter as FrontMatter;
-
-  // Return the serialized content and frontmatter
-  return {
-    frontmatter,
-    serialized,
-  };
-}
+export type Post<TFrontMatter> = {
+  source: MDXRemoteSerializeResult;
+  frontMatter: TFrontMatter;
+  headings: Heading[];
+};
 
 export async function getSortedPostsData(): Promise<PostData[]> {
   // Get file names under /posts
@@ -98,18 +81,18 @@ export async function getAllPostIds() {
   });
 }
 
-export async function getPostData(id: string) {
+export async function getPostData(id: string): Promise<Post<FrontMatter>> {
   const postFilePath = path.join(
     path.join(process.cwd(), "posts"),
     `${id}.mdx`
   );
-  const source = await readFile(postFilePath);
+  const file = await readFile(postFilePath);
 
-  const { content, data } = matter(source);
+  const { content, data } = matter(file);
 
-  const contents = getContents(content);
+  const headings = getHeadings(content);
 
-  const mdxSource: MDXRemoteSerializeResult = await serialize(content, {
+  const source = await serialize(content, {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [remarkGfm],
@@ -119,30 +102,26 @@ export async function getPostData(id: string) {
   });
 
   return {
-    source: mdxSource,
+    source,
     frontMatter: data as FrontMatter,
-    contents,
+    headings,
   };
 }
 
-export function getContents(content: string) {
+export function getHeadings(heading: string): Heading[] {
   // 게시물 본문을 줄바꿈 기준으로 나누고, 제목 요소인 것만 저장
-  const contents = content
+  const headings = heading
     .split(`\n`)
     .filter((t) => t.includes("# ") && t[0] === "#")
     .map((t) => {
       //title의 백틱과 고액 없애줌
-      const content = t
-        .split("# ")[1]
-        .replace(/`/g, "")
-        .replace("\\", "")
-        .trim();
-      const link = content.replaceAll(" ", "_");
+      const text = t.split("# ")[1].replace(/`/g, "").replace("\\", "").trim();
+      const link = heading.replaceAll(" ", "_");
       return {
-        content,
+        text,
         link: `#${link}`,
       };
     });
 
-  return contents;
+  return headings;
 }

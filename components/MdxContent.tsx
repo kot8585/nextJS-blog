@@ -10,7 +10,11 @@ type MdxContentProps = {
 const Heading2 = ({ children }) => {
   const idText = children.replace(/ /g, "_").toLowerCase();
 
-  return <h2 id={idText}>{children}</h2>;
+  return (
+    <h2 id={idText} className="scroll-mt-16">
+      {children}
+    </h2>
+  );
 };
 
 const MdxComponents = {

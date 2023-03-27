@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default async function PostPage({ params: { id } }: Props) {
-  const { source, frontMatter, contents } = await getPostData(id);
+  const { source, frontMatter, headings } = await getPostData(id);
 
   return (
     <>
@@ -28,7 +28,7 @@ export default async function PostPage({ params: { id } }: Props) {
           <section className="xl:w-3/4">
             <MdxContent source={source} />
           </section>
-          <Toc headings={contents} />
+          <Toc headings={headings} />
         </section>
       </article>
     </>

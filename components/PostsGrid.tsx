@@ -9,7 +9,9 @@ export default function PostsGrid({ posts }: Props) {
   return (
     <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       {posts.map((postData: PostData) => {
-        { /* @ts-expect-error Server Component */ }
+        {
+          /* @ts-expect-error Server Component */
+        }
         return <PostCard postData={postData} key={postData.id} />;
       })}
     </ul>
