@@ -23,9 +23,10 @@ export type PostData = {
   frontMatter: FrontMatter;
 };
 
-type Heading = {
+export type Heading = {
   text: string;
   link: string;
+  count: number;
 };
 
 export type Post<TFrontMatter> = {
@@ -93,7 +94,6 @@ export async function getPostData(id: string): Promise<Post<FrontMatter>> {
   const headings = getHeadings(content);
 
   const source = await serialize(content, {
-    // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [remarkGfm],
       rehypePlugins: [rehypeHighlight],
@@ -108,18 +108,27 @@ export async function getPostData(id: string): Promise<Post<FrontMatter>> {
   };
 }
 
-export function getHeadings(heading: string): Heading[] {
+export function getHeadings(content: string): Heading[] {
   // 게시물 본문을 줄바꿈 기준으로 나누고, 제목 요소인 것만 저장
-  const headings = heading
+  const headings = content
     .split(`\n`)
-    .filter((t) => t.includes("# ") && t[0] === "#")
-    .map((t) => {
+    .filter((str) => str.includes("# ") && str[0] === "#")
+    .map((item) => {
+      let count = item.match(/#/g)?.length!;
+      
       //title의 백틱과 고액 없애줌
-      const text = t.split("# ")[1].replace(/`/g, "").replace("\\", "").trim();
-      const link = heading.replaceAll(" ", "_");
+      const text = item
+        .split("# ")[1]
+        .replace(/`/g, "")
+        .replace("\\", "")
+        .trim();
+
+      const link = text.replaceAll(" ", "_");
+
       return {
         text,
         link: `#${link}`,
+        count
       };
     });
 

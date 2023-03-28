@@ -1,35 +1,47 @@
 "use client";
 
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
+import { ReactNode } from 'react';
 
 type MdxContentProps = {
   source: MDXRemoteSerializeResult;
 };
 
-//❗️ 도대체 타입이 모지이이이이이ㅣㅣ이이이이이이이이???????????????/
-const Heading2 = ({ children }) => {
-  const idText = children.replace(/ /g, "_").toLowerCase();
+type Props = {
+  children?: ReactNode;
+}
+const Heading2 = ({ children}: Props) => {
+  const heading = children! as string;
+  const idText = heading.replace(/ /g, "_");
 
   return (
     <h2 id={idText} className="scroll-mt-16">
-      {children}
+    {children}
     </h2>
+  );
+};
+
+const Heading3 = ({ children}: Props) => {
+  const heading = children! as string;
+  const idText = heading.replace(/ /g, "_");
+
+  return (
+    <h3 id={idText} className="scroll-mt-16 text-xl">
+    {children}
+    </h3>
   );
 };
 
 const MdxComponents = {
   h2: Heading2,
-  // h1: (props: React.HTMLProps<HTMLHeadingElement>) => (
-  //   <h1 style={{ color: "#FFF676" }} {...props} />
-  // ),
+  h3: Heading3,
 };
 
 export function MdxContent({ source }: MdxContentProps) {
   return (
     <MDXRemote
-      {...source}
-      components={MdxComponents}
-      className="prose lg:prose-xl"
+    {...source}
+    components={MdxComponents}
     />
   );
 }
