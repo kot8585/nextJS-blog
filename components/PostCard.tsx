@@ -1,50 +1,43 @@
 import React from "react";
 import Date from "@/components/Date";
-import { PostData } from "../pages/index";
-import styled from "styled-components";
 import Link from "next/link";
+import { PostData } from "@/utils/post";
+import Image from "next/image";
 
-type PostCardProps = {
+type Props = {
   postData: PostData;
 };
 
-export default function PostCard({
-  postData: { id, date, title },
-}: PostCardProps) {
+export default async function PostCard({
+  postData: { id, content, frontMatter },
+}: Props) {
   return (
     <Link href={`/posts/${id}`}>
-      <Li key={id}>
-        <H2>{title}</H2>
-        <Span>{id}</Span>
-        <SmallSpan>
-          <Date dateString={date} />
-        </SmallSpan>
-      </Li>
+      <article className="rounded-md overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 border border-borderMain">
+        <Image
+          className="w-full aspect-video"
+          src={frontMatter.imageUrl}
+          alt={frontMatter.title}
+          width={300}
+          height={200}
+        />
+        <div className="flex flex-col items-center p-4">
+          <h3 className="text-lg font-bold line-clamp-1">
+            {frontMatter.title}
+          </h3>
+          <p className="w-full h-12 text-center line-clamp-2">
+            {frontMatter.description}
+          </p>
+          <div className="flex items-center">
+            <div className="m-2 p-[1px] rounded-full bg-gradient-to-r from-middle to-end ">
+              <div className="bg-bgMain rounded-full px-2 ">
+                {frontMatter.category}
+              </div>
+            </div>
+            <Date dateString={frontMatter.date} />
+          </div>
+        </div>
+      </article>
     </Link>
   );
 }
-
-const Li = styled.li`
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  padding: 18px 0;
-`;
-
-const H2 = styled.h2`
-  font-size: larger;
-  font-weight: 600;
-  margin: 0;
-`;
-
-const Span = styled.span`
-  font-size: medium;
-  font-weight: 300;
-  color: var(--text-main);
-`;
-
-export const SmallSpan = styled.span`
-  font-size: small;
-  font-weight: 300;
-  color: gray;
-`;

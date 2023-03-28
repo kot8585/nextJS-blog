@@ -1,17 +1,17 @@
 ---
-title: "다크모드 구현하기"
+title: "Next.js에서 DarkMode구현 시 깜빡이는 문제 해결하는 방법"
 date: "2023-03-09"
-category: nextJs
+category: "Next.js"
+imageUrl: /images/nextjs.png
+description: "Next.js에서 검색 기능을 구현해보자"
 ---
 
-# Next.js에서 DarkMode구현 시 깜빡이는 문제 해결하는 방법
-
-### 문제
+## 문제
 
 새로고침하면 깜빡이는 문제가 있었다. 그닥 좋은 사용자 경험이 되지 않을 것 같아서 해결해보기로 하였다.
 ![darkmode_error](/videos/darkmode-error.gif)
 
-### 원인 (react에서는 안그러네?)
+## 원인 (react에서는 안그러네?)
 
 darkmode의 default값으로 light모드로 하고 useEffect()로 darkmode인지 확인한 다음 darkmode이면 html에 .dark를 추가하도록 구현하였다.
 Next.js는 처음에 서버에서 렌더링한 페이지를 먼저보여주고 useEffect()로 인해 darkmode로 바뀌게 되면서 재렌더링이 일어나 깜빡임 현상 발생한 것이다.
@@ -41,7 +41,7 @@ function updateDarkMode(darkMode: boolean) {
 }
 ```
 
-### 해결방법
+## 해결방법
 
 1. 처음 렌더링이 일어나기 이전에 darkmode를 세팅하고 화면에 그려지도록 할것이다. \_document에서 이를 세팅할 수 있다.
 
@@ -51,30 +51,30 @@ function updateDarkMode(darkMode: boolean) {
 
 첫번째인 방법인 \_document에 설정하기로 결정했다. cookie는 만료시간도 있고 굳이 서버에서 필요하지 않은 데이터니까 제외하였고 useLayoutEffect를 사용하는 건 클라이언트에서 자바스크립트를 로딩하는 거니까 서버에서 자바스크립트를 로딩할 수 있도록 하고 싶었다. 그리고 useLayoutEffect를 Next.js에서 사용하면 warning 뜬다.
 
-### \_document란?
+## \_document란?
 
 페이지를 렌더링하는데 사용되는 `<html>` 태그와 `<body>`태그를 업데이트 할 수 있다. 이 파일은 서버에서 렌더링이 되므로 onClick같은 이벤트 핸들러를 사용할 수 없다. 보통 언어를 설정하거나 태그에 className을 설정할 때 사용된다. 모든 페이지에 공통적으로 적용되는 곳에 사용.
 
-### 그러면 \_document를 설정해서 깜빡이지 않도록 해보자
+## 그러면 \_document를 설정해서 깜빡이지 않도록 해보자
 
-- 1. /pages/\_document.tsx 파일 설정
-     \_document에 script를 추가해서 처음 화면에 보여주기 전에 darkmode인지 확인해서 반영하도록 하였다.
-     `<script dangerouslySetInnerHTML={{ __html: setThemeMode }} />`
+- /pages/\_document.tsx 파일 설정
+  \_document에 script를 추가해서 처음 화면에 보여주기 전에 darkmode인지 확인해서 반영하도록 하였다.
+  `<script dangerouslySetInnerHTML={{ __html: setThemeMode }} />`
 
 ```js
 import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
   const setThemeMode = `
-     if (localStorage.theme === 'dark'
-          || (!('theme' in localStorage)
-              && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark');
-          localStorage.theme = "dark";
-        } else {
-          document.documentElement.classList.remove('dark');
-          localStorage.theme = "light";
-        }
+    if (localStorage.theme === 'dark'
+      || (!('theme' in localStorage)
+        && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        localStorage.theme = "dark";
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.theme = "light";
+    }
   `;
   return (
     <Html>
@@ -90,7 +90,7 @@ export default function Document() {
 }
 ```
 
-### /context/DarkModeContext.tsx 변경
+## /context/DarkModeContext.tsx 변경
 
 window의 prefers-color-scheme와 localStorage에 theme이 있는지 확인하는 코드는 \_document에 옮겼기 때문에 \_document.tsx랑 반복되는 코드는 삭제해서 아래와 같이 변경하였다.
 

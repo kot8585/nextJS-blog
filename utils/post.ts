@@ -1,14 +1,43 @@
 import fs from "fs";
+import { readFile, readdir } from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeHighlight from "rehype-highlight";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import remarkGfm from "remark-gfm";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
-export function getSortedPostsData() {
+export type FrontMatter = {
+  title: string;
+  date: string;
+  category: string;
+  description: string;
+  imageUrl: string;
+};
+
+export type PostData = {
+  id: string;
+  content: string;
+  frontMatter: FrontMatter;
+};
+
+export type Heading = {
+  text: string;
+  link: string;
+  count: number;
+};
+
+export type Post<TFrontMatter> = {
+  source: MDXRemoteSerializeResult;
+  frontMatter: TFrontMatter;
+  headings: Heading[];
+};
+
+export async function getSortedPostsData(): Promise<PostData[]> {
   // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
+  const fileNames = await readdir(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
     // Remove ".md" from file name to get id
     const id = fileName.replace(/\.mdx$/, "");
@@ -18,18 +47,17 @@ export function getSortedPostsData() {
     const fileContents = fs.readFileSync(fullPath, "utf8");
 
     // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents);
+    const { data, content } = matter(fileContents);
 
-    // Combine the data with the id
     return {
       id,
-      content: matterResult.content,
-      ...matterResult.data,
+      content: content,
+      frontMatter: data as FrontMatter,
     };
   });
   // Sort posts by date
   return allPostsData.sort((a, b) => {
-    if (a.date < b.date) {
+    if (a.frontMatter.date < b.frontMatter.date) {
       return 1;
     } else {
       return -1;
@@ -42,22 +70,9 @@ export type postIds = {
     id: string;
   };
 };
-export function getAllPostIds() {
-  const fileNames = fs.readdirSync(postsDirectory);
+export async function getAllPostIds() {
+  const fileNames = await readdir(postsDirectory);
 
-  // Returns an array that looks like this:
-  // [
-  //   {
-  //     params: {
-  //       id: 'ssg-ssr'
-  //     }
-  //   },
-  //   {
-  //     params: {
-  //       id: 'pre-rendering'
-  //     }
-  //   }
-  // ]
   return fileNames.map((fileName) => {
     return {
       params: {
@@ -67,51 +82,55 @@ export function getAllPostIds() {
   });
 }
 
-export async function getPostData(id: string) {
+export async function getPostData(id: string): Promise<Post<FrontMatter>> {
   const postFilePath = path.join(
     path.join(process.cwd(), "posts"),
     `${id}.mdx`
   );
-  const source = fs.readFileSync(postFilePath);
+  const file = await readFile(postFilePath);
 
-  const { content, data } = matter(source);
+  const { content, data } = matter(file);
 
-  const contents = getContents(content);
+  const headings = getHeadings(content);
 
-  const mdxSource = await serialize(content, {
-    // Optionally pass remark/rehype plugins
+  const source = await serialize(content, {
     mdxOptions: {
-      remarkPlugins: [],
+      remarkPlugins: [remarkGfm],
       rehypePlugins: [rehypeHighlight],
     },
     scope: data,
   });
 
   return {
-    source: mdxSource,
-    frontMatter: data,
-    contents,
+    source,
+    frontMatter: data as FrontMatter,
+    headings,
   };
 }
 
-export function getContents(content: string) {
+export function getHeadings(content: string): Heading[] {
   // 게시물 본문을 줄바꿈 기준으로 나누고, 제목 요소인 것만 저장
-  const contents = content
+  const headings = content
     .split(`\n`)
-    .filter((t) => t.includes("# ") && t[0] === "#")
-    .map((t) => {
+    .filter((str) => str.includes("# ") && str[0] === "#")
+    .map((item) => {
+      let count = item.match(/#/g)?.length!;
+      
       //title의 백틱과 고액 없애줌
-      const content = t
+      const text = item
         .split("# ")[1]
         .replace(/`/g, "")
         .replace("\\", "")
         .trim();
-      const link = content.replaceAll(" ", "_");
+
+      const link = text.replaceAll(" ", "_");
+
       return {
-        content,
+        text,
         link: `#${link}`,
+        count
       };
     });
 
-  return contents;
+  return headings;
 }

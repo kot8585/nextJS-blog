@@ -1,20 +1,24 @@
+"use client";
+
+import { Heading } from "@/utils/post";
 import React from "react";
 
-type TocProps = {
-  content: string;
-  count: number;
-}[];
+type Props = {
+  headings: Heading[];
+};
 
-export default function Toc({ headings }) {
+export default function Toc({ headings }: Props) {
   return (
-    <ol>
+    <ul className="hidden xl:w-1/4 sticky top-20 self-start xl:block">
       {headings.map((heading) => {
-        return (
-          <li key={heading.content}>
-            <a href={heading.link}>{heading.content}</a>
-          </li>
-        );
+          return (
+            <li key={heading.text} className={`list-none  !my-1 ${heading.count === 2 ? 'text-md t' : 'ml-5 text-sm'} `}>
+              <a className="no-underline font-normal"
+              href={heading.link}>{heading.text}</a>
+            </li>
+          );
+       
       })}
-    </ol>
+    </ul>
   );
 }
