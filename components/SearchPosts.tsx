@@ -3,7 +3,6 @@
 import { GoSearch } from "react-icons/go";
 import { ChangeEvent, useState } from "react";
 import { PostData } from "../utils/post";
-import PostCard from "./PostCard";
 import Helmet from "./Helmet";
 import PostsGrid from "./PostsGrid";
 

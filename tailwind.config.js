@@ -12,6 +12,7 @@ module.exports = {
         bgMain: "var(--bg-main)",
         bgSub: "var(--bg-sub)",
         brandMain: "var(--brand-main)",
+        borderMain: "var(--border-main)",
         start: "#FF6F91",
         middle: "#FF9671",
         end: "#FFC75F",

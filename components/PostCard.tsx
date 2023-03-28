@@ -13,7 +13,7 @@ export default async function PostCard({
 }: Props) {
   return (
     <Link href={`/posts/${id}`}>
-      <article className="rounded-md overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1">
+      <article className="rounded-md overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 border border-borderMain">
         <Image
           className="w-full aspect-video"
           src={frontMatter.imageUrl}

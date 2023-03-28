@@ -18,7 +18,7 @@ export default function Header() {
   const [isClicked, setIsClicked] = useRecoilState(clickedSideBarAtom);
 
   return (
-    <header className="flex left-0 top-0 justify-between sticky z-20 text-xl p-2 backdrop-blur-md backdrop-bgMain h-14">
+    <header className="flex left-0 top-0 justify-between sticky z-20 text-xl p-2 backdrop-blur-md backdrop-bgMain h-14   border-b-2 border-borderMain">
       <div className={DIV_CLASS}>
         <button onClick={() => setIsClicked(!isClicked)}>
           {
