@@ -1,0 +1,88 @@
+---
+title: "Javascript - promise, async에서 return된 데이터를 가져오는 방법"
+date: "2023-02-08"
+category: "JavaScript"
+description: "비동기 데이터 사용하기"
+imageUrl: "/images/javascript.png"
+---
+
+### 1\. 비동기에서 리턴된 데이터를 사용하는 방법
+​
+내가 원하는 것은 아래 예시 처럼 비동기코드에서 리턴된 데이터를 비동기 함수 밖에서 사용하는 것이었다. 결과적으로 동기로 실행되는 코드에서 비동기 코드를 사용하는 것은 못한다. 
+​
+```
+const address = fetch("https://jsonplaceholder.typicode.com/users/1")
+  .then((response) => response.json())
+  .then((user) => {
+    return user.address;
+  });
+​
+console.log(address);
+```
+​
+위 코드를 실행했더니 다음과 같은 결과를 얻었다. 
+​
+```
+Promise { <pending> }
+```
+​
+async 에서도 마찬가지이다. 
+​
+```
+async function getFetchData(){ 
+  const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
+  const user = await response.json();
+  return user.address;
+}
+​
+console.log(getFetchData()); //Promise { <pending> }
+```
+​
+### 2.`Promise { <pending> }`가 리턴되는 이유
+​
+\- promise의 후속 처리 메서드인 then, catch, finally 메서드와 async함수는 언제나 promise를 리턴하기 때문이다.
+​
+\- 따라서, promise가 리턴한 data에 접근하는 방법은 then, async에서는 await를 쓰는 방법밖에 없다.
+​
+\- 상태가 pending인 이유는 console.log(getFetchData()) 함수가 fetch() 요청 직후 resolve될 때까지 기다리지 않고 실행되기 때문이다. 
+​
+### 3\. 그렇다면 data를 가져오기 위해서는 어떻게 해야할까?
+​
+3-1. 한번 더 then()을 통해 promise의 결과에 접근하기 
+​
+```
+const address = fetch("https://jsonplaceholder.typicode.com/users/1")
+  .then((response) => response.json())
+  .then((user) => {
+    return user.address;
+  });
+​
+​
+const printAddress = () => {
+    //❗️한번더 then 써주기
+    address.then((a) => {
+        console.log(a);
+    });
+};
+​
+printAddress();
+```
+​
+3-2. await를 사용하여 promise의 결과에 접근하기
+​
+```
+const address = fetch("https://jsonplaceholder.typicode.com/users/1")
+  .then((response) => response.json())
+  .then((user) => {
+    return user.address;
+  });
+​
+const printAddress = async () => {
+  const a = await address;
+  console.log(a);
+};
+​
+printAddress();
+```
+​
+참고 : [https://dev.to/ramonak/javascript-how-to-access-the-return-value-of-a-promise-object-1bck](https://dev.to/ramonak/javascript-how-to-access-the-return-value-of-a-promise-object-1bck)

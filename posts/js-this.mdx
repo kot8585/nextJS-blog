@@ -1,0 +1,209 @@
+---
+title: "JavaScript - this에 대해 알아보자"
+date: "2023-01-21"
+category: "JavaScript"
+description: "호출하는 방식에 따라 this에 바인딩 되는 값을 알아본다."
+imageUrl: "/images/javascript.png"
+---
+
+## 0. 들어가기에 앞서
+​
+드림코딩의 당근게임을 클론코딩하면서 모듈화를 하는 과정에서 this바인딩을 접하게 되었습니다. this.메서드명()을 했을 때 this에 undefined가 할당되어 제가 원하는 결과가 나오지 않았는데요. 이 현상이 발생하는 이유를 알고 this를 잘 사용하기 위해  포스팅을 하게 되었습니다. 목차는 다음과 같습니다.
+​
+> 1\. this란?  
+> 2\. 함수 호출 방식에 따른 this 바인딩  
+>    2-1. 일반 함수 호출 방식  
+>    2-2. 메서드 호출 방식  
+>    2-3. 생성자 호출 방식  
+> 3\. this의 동적 바인딩으로 인해 생길 수 있는 문제들  
+> 4\. 이 문제들을 해결하기 위한 방법들
+​
+​
+## 1. this란?
+​
+this는 자신이 속한 객체 또는 자신이 생성할 인스턴스를 가리키는 자기 참조 변수입니다. 생성자 함수를 정의하는 시점에는 아직 인스턴스를 생성하기 이전이므로 생성자 함수가 생성할 인스턴스를 가리키는 식별자를 알 수 없습니다. 이를 위해 자바스크립트는 this라는 특수한 식별자를 제공합니다. 즉, this를 통해 자신이 속한 객체 또는 자신이 생성할 인스턴스의 프로퍼티나 메서드를 참조할 수 있습니다.
+​
+```
+class Circle {
+    constructor(radius){
+        //이 시점에는 생성자 함수 자신이 생성할 인스턴스를 가리키는 식별자를 알 수 없다.
+        ??.radius = radius;
+    }
+    
+    getDiameter(){
+        return 2 * ??.radius;
+    }
+}
+​
+const circle = new Circle(5);
+```
+​
+​
+## 2. 함수 호출 방식에 따른 this바인딩
+​
+**this는 기본적으로 동적바인딩으로 함수 호출방식에 따라 this가 가리키는 값이 동적으로 결정됩니다.** 주의할 것은 동일한 함수도 다양한 방식으로 호출할 수 있다는 것입니다. 함수를 호출하는 방식에는 다음과 같은 방식이 있습니다. 
+​
+1\. 일반 함수 호출
+​
+2\. 메서드 호출
+​
+3\. 생성자 함수 호출
+​
+그렇다면 각 방식에 따라 this바인딩이 어떻게 결정되는지 살펴볼까요? 
+​
+### 2-1. 일반 함수 호출
+​
+```javascript
+function foo() {
+  //window 출력 
+  //strict 모드에서는 undifined 출력
+  console.log(this);  
+}
+foo();
+```
+​
+일반 함수로 호출하면 함수 내부의 this에는 **전역 객체가 바인딩**됩니다. 다만 this는 객체의 프로퍼티나 메서드를 참조하기 위한 것이므로 객체를 생성하지 않는 일반함수에서의 this는 의미가 없습니다. 따라서 strict mode가 적용된 일반 함수 내부에서는 undefined가 바인딩됩니다.
+​
+​
+### 2-2. 메서드 호출
+​
+```
+const person = {
+    name: 'Lee',
+    getName() {return this.name}
+};
+console.log(person.getName()); // Lee
+```
+​
+메서드 방식으로 호출한다면 this는 **메서드를 호출할 때 메서드 이름 앞의 마침표 ( . ) 연산자 앞에 써놓은 객체가 바인딩**됩니다. 주의할 점은 메서드를 **소유한 객체가 아닌 메서드를 호출한 객체에 바인딩**된다는 것입니다. 
+​
+```
+const anotherPerson = {
+  name: 'Park'
+};
+​
+//getName 메서드를 anotherPerson 객체의 메서드로 할당
+anotherPerson.getName = person.getName;
+​
+//getName()을 호출한 객체는 anotherPerson이다. 
+console.log(anotherPerson.getName()); // Park
+​
+// getName 메서드를 변수에 할당 
+const getName = person.getName;
+​
+// getName 메서드를 일반 함수로 호출
+console.log(getName()); // window
+```
+​
+​
+### 2-3. 생성자 함수 호출 
+​
+생성자 함수 호출 방식에서 this는 **생성자 함수가 생성할 인스턴스가 바인딩**됩니다. 
+​
+```javascript
+class Circle {
+constructor(radius){
+    this.radius = radius;
+    this.getDiameter = function() {
+     return 2 * this.radius;
+    };
+}
+const circle = new Circle(5);
+console.log(circle.getDiameter()); // 10
+```
+​
+## 3. this의 동적 바인딩으로 인해 생길 수 있는 문제들
+​
+this의 동적바인딩으로 인해 원치 않는 코드결과가 나올 수 있는데요. 예를 들면 다음과 같은  경우입니다.
+​
+```javascript
+class Square {
+  constructor(text) {
+    this.text = text;
+    this.div = document.querySelector("div");
+    //생성자 함수 내에서 콜백함수 호출
+    this.div.addEventListener('click',this.onClick);
+  }
+  
+  onClick() {
+    console.log(this.text);
+  }
+}
+
+const square = new Square('둥둥');
+```
+​
+div블럭을 클릭하면 onClick()이 실행되는 코드입니다. this.div.addEventListener('click', this.onClick)을 보면 콜백함수인 onClick을 전달받아 호출하도록 하였습니다. 그래서 div블럭이 클릭되면 onClick함수내부의 this.text에 클래스를 생성할 때 인자로 넣어준 '둥둥'이 값으로 바인딩되어서 콘솔에 '둥둥'이 출력될 것이라고 예상했지만 실제 this.text에 바인딩된 값은 undefined인 현상이 발생합니다. 
+​
+이렇게 출력된 이유는 onClick을 일반함수로 호출하였기 때문입니다.
+​
+자바스크립트는 일반 함수로 호출된 모든 함수(중첩 함수, 콜백 함수 포함) 내부의 this에는 전역 객체가 바인딩된다고 합니다. 
+​
+즉, 자바스크립트는 생성자 함수나 메서드 내에서 일지라도 콜백함수나 중첩함수를 일반함수로 호출한다면 함수 내부의 this에는 전역객체가 바인딩됩니다. 그렇다면 콜백함수 내부의 this에 전역객체가 아닌 클래스 객체를 할당하는 방법을 알아봅시다.
+​
+​
+## 4. 콜백함수나 중첩함수 내에서 정적으로 this 바인딩 하는 방법
+​
+### 4-1. 화살표 함수 사용
+​
+화살표 함수는 렉시컬 컨텍스트안의 this값을 유지합니다. 즉, 화살표 함수의 this는 함수가 정의된 위치에 의해 결정됩니다.
+​
+```
+class Square {
+  constructor(text) {
+    this.text = text;
+    this.div = document.querySelector("div");
+    //변경!! 콜백함수를 화살표 함수로 감싸 호출
+    this.div.addEventListener('click',() => {this.onClick()});
+  }
+  
+  onClick() {
+    console.log(this.text);
+  }
+}
+
+const square = new Square('둥둥');
+```
+​
+또는 아래와 같이 onClick변수에 화살표 함수를 할당해 놓아도 같은 결과를 냅니다.
+​
+```
+class Square {
+  constructor(text) {
+    this.text = text;
+    this.div = document.querySelector("div");
+    this.div.addEventListener('click',this.onClick);
+  }
+  
+  //변경!! 변수에 화살표 함수 할당
+  onClick = () => {
+    console.log(this.text);
+  }
+}
+​
+const square = new Square('둥둥');
+```
+​
+​
+### 4-2. Function.prototype.bind() 사용
+​
+Function.prototype.bind()를 통해 this로 사용할 값을 전달해 바인드 시켜줄 수 있습니다. 
+​
+```
+class Square {
+  constructor(text) {
+    this.text = text;
+    this.div = document.querySelector("div");
+    //변경!!! bind() 사용
+    this.div.addEventListener('click',this.onClick.bind(this));
+  }
+  
+  onClick() {
+    console.log(this.text);
+  }
+}
+
+const square = new Square('둥둥');
+```
+​
+출처 : 모던 자바스크립트 deep dive

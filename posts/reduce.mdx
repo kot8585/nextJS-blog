@@ -1,0 +1,144 @@
+---
+title: "JS - Reduce를 알아보자"
+date: "2023-02-27"
+category: "Javascript"
+description: "Javascript의 reduce를 통해 총 가격 계산하기"
+imageUrl: "/images/javascript.png"
+---
+
+## 0. reduce를 접하게 된 계기
+​
+쇼핑몰 개인 프로젝트를 만들면서 장바구니에 담긴 상품들의 총가격을 계산하는 코드에 reduce를 사용해 보면서 reduce에 관한 문서를 읽게 되었는데 잘 안다면 아주아주 쓸 수 있는 곳이 많을 것 같다. reduce를 정복해 보자🔥🔥
+​
+## 1. 기본 문법
+```javascript
+//callbackFn
+reduce(callbackFn, initialValue) 
+​
+//arrow function
+reduce((accumulator, currentValue, currentIndex, array) => { /* ... */ }, initialValue)
+```
+-   currentIndex, array, initialValue는 optional 값이다.
+​
+## 2. reducer 동작원리
+-   reduce()는 iterator메서드로 index횟수동안 돌면서 callbackFn을 실행하는데 이 **callbackFn을 실행하고 리턴된 값은 accumulator로 할당**된다.
+-   마지막 accumulator의 값이 reduce의 return값이 된다.
+-   빈 배열에 대해서는 callbackFn이 호출되지 않는다.
+-   기존의 배열에 영향을 주지 않는다.
+​
+## 3.  initialValue
+initialValue를 할당했을 경우와 할당하지 않았을 경우 매우 다르게 동작한다. 
+​
+|   |  **initalValue 할당 X** | **initalValue 할당 O** |
+| --- | --- | --- |
+| **accumulator에 할당되는 값** | array\[0\]의 값 | initialValue |
+| **currentValue에 할당되는 값** | array\[1\]의 값 | array\[0\]의 값 |
+| **배열의 길이가 0일 경우** | TypeError 발생   TypeError: The array contains no elements and initialValue is not provided. | callbackFn이 실행되지 않고 initialValue 리턴 |
+| **배열의 길이가 1일 경우** | callbackFn이 실행되지 않고 array\[1\]의 값 리턴 | callbackFn이 실행된 값 리턴 |
+​
+## 4. 주의할 점
+> objects의 배열의 합을 위해 reduce를 사용할 때는 반드시 initialValue를 할당해주어야 한다. 
+​<br />
+왜 그런지 다음의 예시를 통해 자세히 알아보자.
+​​<br />
+각 object의 프로퍼티의 값을 더한 값을 얻기 위해 다음과 같이 짰다. 1+2+3이 더해져서 6이 리턴되기를 바랐는데 다음의 결과 값은 어떤게 나올까??
+​
+```javascript
+const objects = [{ x: 1 }, { x: 2 }, { x: 3 }];
+const sum = objects.reduce(
+  (accumulator, currentValue) => accumulator + currentValue.x
+  );
+​
+console.log(sum);
+```
+​
+결과는 원한대로 6이 출력될 것이다.
+​
+하지만 **배열의 원소가 하나 밖에 없을 경우에는?** 다음 코드의 결과를 예측해보자.
+​
+```javascript
+const objects = [{ x: 1 }];
+const sum = objects.reduce(
+  (accumulator, currentValue) => accumulator + currentValue.x
+  );
+​
+console.log(sum);
+```
+​
+결과는 1이 출력되지 않고 **`{ x: 1 }`가 출력**된다.
+​
+reduce에 **initialValue를 할당해주지 않아 첫 번째 원소가 리턴되었기 때문**이다. 아래처럼 initialValue를 할당해 주면 원하는 대로 1이 출력된다.
+​
+```
+const objects = [{ x: 1 }];
+const sum = objects.reduce(
+  (accumulator, currentValue) => accumulator + currentValue.x,
+  0
+ );
+​
+console.log(sum);
+```
+​
+## 5. reduce의 다양한 활용
+### 5-1. object로 이루어진 배열의 합 구하기
+accumulator에는 initialValue가 할당되기 때문에 currentValue에만 ". x"를 사용했다.
+```
+const objects = [{ x: 1 }, { x: 2 }, { x: 3 }];
+const sum = objects.reduce(
+  (accumulator, currentValue) => accumulator + currentValue.x,
+  0,
+);
+​
+console.log(sum); // 6
+```
+​
+### 5-2. 중첩된 배열을 하나의 배열로 합치기
+```
+const flattened = [
+  [0, 1],
+  [2, 3],
+  [4, 5],
+].reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
+```
+​
+### 5-3. 같은 value의 개수 구하기
+```
+const names = ["Alice", "Bob", "Tiff", "Bruce", "Alice"];
+​
+const countedNames = names.reduce((allNames, name) => {
+  const currCount = allNames[name] ?? 0;
+  return {
+    ...allNames,
+    [name]: currCount + 1,
+  };
+}, {});
+// countedNames is:
+// { 'Alice': 2, 'Bob': 1, 'Tiff': 1, 'Bruce': 1 }
+```
+​
+### 5-4. 그룹핑하기
+```javascript
+const people = [
+  { name: "Alice", age: 21 },
+  { name: "Max", age: 20 },
+  { name: "Jane", age: 20 },
+];
+​
+const result = people.reduce((acc, obj) => {
+  const key = obj["age"];
+  const curGroup = acc[key] ?? [];
+  
+  return {...acc, [key]: [...curGroup, obj]};
+}, {});
+​
+console.log("result", result);
+// {
+//   20: [
+//     { name: 'Max', age: 20 },
+//     { name: 'Jane', age: 20 }
+//   ],
+//   21: [{ name: 'Alice', age: 21 }]
+// }
+```
+​
+참고 : [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global\_Objects/Array/reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)

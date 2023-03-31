@@ -1,0 +1,80 @@
+---
+title: "Javascript - promise, async에서 return된 데이터를 가져오는 방법"
+date: "2023-02-08"
+category: "JavaScript"
+description: "비동기 데이터 사용하기"
+imageUrl: "/images/javascript.png"
+---
+
+## 1\. Promise란?
+
+\- 자바스크립트에서 비동기 처리에 사용되는 객체이다. 
+
+\- 현재 비동기 처리가 어떻게 진행되고 있는지를 나타내는 상태정보를 갖는다. 
+
+\-  Promise의 3가지 상태정보는 아래와 같다.
+
+| 프로미스 상태 정보 |  의미 |  상태 변경 조건 |
+| --- | --- | --- |
+| pending | 비동기 처리가 아직 수행되지 않은 상태 | 프로미스가 생성된 직후 기본 상태 |
+| fulfilled | 비동기 처리가 수행된 상태(성공) | resolve 함수 호출 |
+| rejected | 비동기 처리가 수행된 상태(실패) | reject 함수 호출 |
+
+#### 1-1. Promise 코드 예시
+
+```
+promiseGet(url)
+	.then((userId) => promiseGet(`${url}/users/${userId}`))
+	.then((userInfo) => console.log(userInfo))
+```
+
+## 2\. async / await
+
+\- promise도 callback 패턴이기에 가독성이 좋지 않은데 async/await를 사용하면 프로미스의 후속 처리 메서드 없이 **마치 동기 처리처럼** 프로미스가 처리 결과를 반환하도록 구현할 수 있다.
+
+\- await 는 async 함수 안에서만 동작하며 await를 통해 Promise 반환 값을 받아 올 수 있다.
+
+#### 2-1. async / await 코드 예시
+
+```
+(async (url) => {
+	const userId = await promiseGet(`${url}/posts/1`);
+	const userInfo = await promiseGet(`${url}/users/${userId}`);
+	console.log(userInfo);
+})();
+```
+
+그리고 주의할 점은 async/await 은 Promise 와는 다르게 에러를 핸들링 할 수 있는 기능이 없다. 따라서 try-catch() 문을 활용하여 에러를 핸들링 하여 주어야 한다.
+
+```
+const foo = async () => {
+  try {
+    const wrongUrl = 'https://wrong.url';
+
+    const response = await fetch(wrongUrl);
+    const data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.error(err); //TypeError: Failed to fetch
+  }
+}
+foo();
+```
+
+또는 async에서 try/catch를 통해 에러처리를 하지 않을 경우 발생한 에러를 reject하는 프로미스를 반환하기 때문에 아래와 같이 사용할 수도 있다.
+
+```
+const foo = async () => {
+    const wrongUrl = 'https://wrong.url';
+
+    const response = await fetch(wrongUrl);
+    const data = await response.json();
+    return data;
+}
+
+foo()
+.then(console.log)
+.catch(console.error);
+```
+
+참고 : 모던 자바스크립트 deep dive
