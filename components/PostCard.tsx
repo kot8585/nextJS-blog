@@ -8,7 +8,7 @@ type Props = {
   postData: PostData;
 };
 
-export default async function PostCard({
+export default function PostCard({
   postData: { id, content, frontMatter },
 }: Props) {
   return (
