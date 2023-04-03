@@ -1,11 +1,14 @@
-const withMDX = require("@next/mdx")({
+import mdx from '@next/mdx';
+import rehypePrism from 'rehype-prism-plus';
+
+const withMDX = mdx ({
   extension: /\.mdx?$/,
   options: {
     // If you use remark-gfm, you'll need to use next.config.mjs
     // as the package is ESM only
     // https://github.com/remarkjs/remark-gfm#install
     remarkPlugins: [],
-    rehypePlugins: [],
+    rehypePlugins: [rehypePrism],
     // If you use `MDXProvider`, uncomment the following line.
     providerImportSource: "@mdx-js/react",
   },
@@ -33,4 +36,6 @@ const nextConfig = {
 };
 
 // Merge MDX config with Next.js config
-module.exports = withMDX(nextConfig);
+export default withMDX({
+  ...nextConfig,
+});

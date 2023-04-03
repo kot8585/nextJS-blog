@@ -3,9 +3,10 @@ import { readFile, readdir } from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 import { serialize } from "next-mdx-remote/serialize";
-import rehypeHighlight from "rehype-highlight";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import remarkGfm from "remark-gfm";
+import rehypePrism from 'rehype-prism-plus';
+
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
@@ -36,6 +37,7 @@ export type Post<TFrontMatter> = {
 };
 
 export async function getSortedPostsData(): Promise<PostData[]> {
+  console.log('sorted post 불림');
   // Get file names under /posts
   const fileNames = await readdir(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
@@ -96,7 +98,7 @@ export async function getPostData(id: string): Promise<Post<FrontMatter>> {
   const source = await serialize(content, {
     mdxOptions: {
       remarkPlugins: [remarkGfm],
-      rehypePlugins: [rehypeHighlight],
+      rehypePlugins: [rehypePrism],
     },
     scope: data,
   });
