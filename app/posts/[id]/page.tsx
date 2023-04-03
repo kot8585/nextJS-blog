@@ -2,14 +2,21 @@ import Banner from "@/components/Banner";
 import Helmet from "@/components/Helmet";
 import { MdxContent } from "@/components/MdxContent";
 import Toc from "@/components/Toc";
-import { getAllPostIds, getPostData } from "@/utils/post";
+import { FrontMatter, getAllPostIds, getPostData } from "@/utils/post";
 import '../../../themes/prism-atom_dark.css'
+import { Metadata } from "next";
 
 type Props = {
   params: {
     id: string;
   };
 };
+
+export async function generateMetadata({ params: {id} }: Props): Promise<Metadata> {
+  const {frontMatter: { title, category, description }} = await getPostData(id);
+  return { title, category, description }
+}
+
 
 export default async function PostPage({ params: { id } }: Props) {
   const { source, frontMatter, headings } = await getPostData(id);

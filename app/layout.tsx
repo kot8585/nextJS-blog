@@ -5,6 +5,18 @@ import "./globals.css";
 import { getSortedPostsData } from "@/utils/post";
 import Recoil from "@/components/Recoil";
 import OutsideDetector from "@/hooks/OutsideDetector";
+import { Metadata } from "next";
+
+export const metadata:Metadata = {
+  title: {
+    default: 'Moon.dev',
+    template: '%s'
+  }, 
+  description: '프론트엔드 개발자 Moon',
+  icons: {
+    icon: '/favicon.ico',
+  }
+}
 
 export default async function RootLayout({
   children,
