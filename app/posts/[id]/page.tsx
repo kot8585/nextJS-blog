@@ -3,7 +3,7 @@ import Helmet from "@/components/Helmet";
 import { MdxContent } from "@/components/MdxContent";
 import Toc from "@/components/Toc";
 import { getAllPostIds, getPostData } from "@/utils/post";
-import '../../../themes/prism-darcula.css'
+import '../../../themes/prism-atom_dark.css'
 
 type Props = {
   params: {
