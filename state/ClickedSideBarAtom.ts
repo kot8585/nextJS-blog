@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
 export const clickedSideBarAtom = atom<boolean>({
-  key: "clickedSideBar",
+  key: "clickedSideBarAtom",
   default: false,
 });

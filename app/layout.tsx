@@ -4,7 +4,6 @@ import { DarkModeProvider } from "../context/DarkModeContext";
 import "./globals.css";
 import { getSortedPostsData } from "@/utils/post";
 import Recoil from "@/components/Recoil";
-import OutsideDetector from "@/hooks/OutsideDetector";
 import { Metadata } from "next";
 
 export const metadata:Metadata = {
@@ -40,12 +39,10 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: setThemeMode }} />
         <DarkModeProvider>
           <Recoil>
+            <SideBar posts={posts} />
             <Header />
             <section className="flex w-full">
-              <SideBar posts={posts} />
-              <OutsideDetector>
                 <main className="h-full w-full items-end">{children}</main>
-              </OutsideDetector>
             </section>
           </Recoil>
         </DarkModeProvider>

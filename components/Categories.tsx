@@ -1,6 +1,6 @@
 import { PostData } from '../utils/post';
 import Link from 'next/link';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { clickedSideBarAtom } from '@/state/ClickedSideBarAtom';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function Categories({ posts }: Props) {
-  const [isClicked, setIsClicked] = useRecoilState(clickedSideBarAtom);
+  const setIsClicked = useSetRecoilState(clickedSideBarAtom);
 
   let init: { [category: string]: number } = {};
   const categoryCount = posts.reduce((accumulator, currentValue) => {
