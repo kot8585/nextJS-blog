@@ -2,7 +2,7 @@ import Banner from "@/components/Banner";
 import Helmet from "@/components/Helmet";
 import { MdxContent } from "@/components/MdxContent";
 import Toc from "@/components/Toc";
-import { FrontMatter, getAllPostIds, getPostData } from "@/utils/post";
+import { FrontMatter, getAllPostIds, getPostData } from "@/service/post";
 import '../../../themes/prism-atom_dark.css'
 import { Metadata } from "next";
 

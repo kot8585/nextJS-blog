@@ -1,6 +1,6 @@
 import Banner from "@/components/Banner";
 import React from "react";
-import { getSortedPostsData } from "@/utils/post";
+import { getSortedPostsData } from "@/service/post";
 import PostsGrid from "@/components/PostsGrid";
 
 export default async function page() {

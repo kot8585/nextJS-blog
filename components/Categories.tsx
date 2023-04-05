@@ -1,4 +1,4 @@
-import { PostData } from '../utils/post';
+import { PostData } from '../service/post';
 import Link from 'next/link';
 import { useSetRecoilState } from 'recoil';
 import { clickedSideBarAtom } from '@/state/ClickedSideBarAtom';

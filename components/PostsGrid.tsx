@@ -1,4 +1,4 @@
-import { PostData } from "../utils/post";
+import { PostData } from "../service/post";
 import PostCard from "./PostCard";
 
 type Props = {

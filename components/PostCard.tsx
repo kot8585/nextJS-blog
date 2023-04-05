@@ -1,7 +1,7 @@
 import React from "react";
 import Date from "@/components/Date";
 import Link from "next/link";
-import { PostData } from "@/utils/post";
+import { PostData } from '@/service/post';
 import Image from "next/image";
 
 type Props = {

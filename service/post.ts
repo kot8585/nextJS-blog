@@ -6,9 +6,9 @@ import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import remarkGfm from "remark-gfm";
 import rehypePrism from 'rehype-prism-plus';
+import { cache } from "react";
 
 
-const postsDirectory = path.join(process.cwd(), "posts");
 
 export type FrontMatter = {
   title: string;
@@ -30,25 +30,32 @@ export type Heading = {
   count: number;
 };
 
+
 export type Post<TFrontMatter> = {
   source: MDXRemoteSerializeResult;
   frontMatter: TFrontMatter;
   headings: Heading[];
 };
 
-export async function getSortedPostsData(): Promise<PostData[]> {
-  console.log('sorted post 불림');
-  // Get file names under /posts
+export type postIds = {
+  params: {
+    id: string;
+  };
+};
+
+const postsDirectory = path.join(process.cwd(), "posts");
+
+export const getSortedPostsData = cache(async () => {
+console.log('getSortedPostsData 불림');
+// })
+// export async function getSortedPostsData(): Promise<PostData[]> {
   const fileNames = await readdir(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
-    // Remove ".md" from file name to get id
     const id = fileName.replace(/\.mdx$/, "");
 
-    // Read markdown file as string
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, "utf8");
 
-    // Use gray-matter to parse the post metadata section
     const { data, content } = matter(fileContents);
 
     return {
@@ -58,20 +65,10 @@ export async function getSortedPostsData(): Promise<PostData[]> {
     };
   });
   // Sort posts by date
-  return allPostsData.sort((a, b) => {
-    if (a.frontMatter.date < b.frontMatter.date) {
-      return 1;
-    } else {
-      return -1;
-    }
-  });
-}
+  return allPostsData.sort((a, b) =>  (a.frontMatter.date < b.frontMatter.date) ? 1 : -1 );
+})
 
-export type postIds = {
-  params: {
-    id: string;
-  };
-};
+
 export async function getAllPostIds() {
   const fileNames = await readdir(postsDirectory);
 

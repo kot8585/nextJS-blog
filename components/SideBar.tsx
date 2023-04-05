@@ -1,7 +1,7 @@
 "use client";
 
 import { clickedSideBarAtom } from "@/state/ClickedSideBarAtom";
-import { PostData } from "@/utils/post";
+import { PostData } from "@/service/post";
 import React, { useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
 import Categories from "./Categories";

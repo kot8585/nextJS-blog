@@ -4,7 +4,7 @@ import { BsPersonVcard } from "react-icons/bs";
 
 export default function UserInfo() {
   return (
-    <section className="flex justify-evenly">
+    <section className="flex justify-evenly flex-1 items-end">
       <Link href='https://github.com/kot8585' className="flex flex-col items-center" >
         <AiFillGithub className="w-12 h-12"/>
         <span>Github</span>

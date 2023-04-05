@@ -1,5 +1,5 @@
 import React from "react";
-import { PostData } from "../utils/post";
+import { PostData } from "../service/post";
 import PostsGrid from "./PostsGrid";
 
 type Props = {

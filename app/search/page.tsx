@@ -1,4 +1,4 @@
-import { getSortedPostsData } from "../../utils/post";
+import { getSortedPostsData } from "../../service/post";
 import SearchPosts from "@/components/SearchPosts";
 
 export default async function SearchPage() {

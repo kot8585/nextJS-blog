@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import SideBar from "@/components/SideBar";
 import { DarkModeProvider } from "../context/DarkModeContext";
 import "./globals.css";
-import { getSortedPostsData } from "@/utils/post";
+import { getSortedPostsData } from "@/service/post";
 import Recoil from "@/components/Recoil";
 import { Metadata } from "next";
 

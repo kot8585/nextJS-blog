@@ -2,7 +2,7 @@
 
 import { GoSearch } from "react-icons/go";
 import { ChangeEvent, useState } from "react";
-import { PostData } from "../utils/post";
+import { PostData } from "../service/post";
 import Helmet from "./Helmet";
 import PostsGrid from "./PostsGrid";
 

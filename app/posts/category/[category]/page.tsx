@@ -1,5 +1,5 @@
 import FilterablePosts from "@/components/FilterablePosts";
-import { getSortedPostsData } from "@/utils/post";
+import { getSortedPostsData } from "@/service/post";
 import { Metadata } from "next";
 import React from "react";
 
