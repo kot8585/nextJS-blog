@@ -1,0 +1,314 @@
+---
+title: "무한 스크롤 기능 구현해보기"
+date: "2023-04-08"
+category: "React"
+imageUrl: /images/react.png
+description: "Next.js에서 다크모드 적용시 깜빡이는 문제를 해결해보자"
+---
+
+## 서론
+
+상품이 많을 경우 한번에 모든 상품을 가져오면 프론트와 백 모두 과부하가 올 것이다. 그래서 무한 스크롤 기능을 추가해보기로 하였다. 
+
+아래의 것들을 사용해서 무한 스크롤을 구현하였다. 
+
+- React Query의 useInfiniteQuery
+- Firebase의 Realtime Database의 orderbyChild, endBefore 옵션
+- Browser API의 Intersection observer
+- react-spinners 
+
+## 완성된 화면
+마지막 상품 끝에 로딩 스피너가 화면에 보였을 경우 다음 상품리스트를 가져오는 함수가 호출되도록 하였다. 
+
+![무한스크롤 구현 화면](/images/intersection-complete.gif)
+
+### 구현 순서
+- intersection observer 인스턴스 생성해서 observer에 등록한 콜백함수가 잘 호출되는지 확인하기
+- firebase api를 이용해서 데이터가 내림차순으로 주어진 limit만큼 잘 나오는지 확인
+- React Query의 useInfiniteQuery 구현하기
+- intersection observer, firebase, useInfiniteQuery 연결하기
+
+
+## 구현 방법
+
+### 1. Intersection observer 인스턴스 생성
+
+모니터링 하려는 요소가 다른 요소에 들어오거나 나갈때마다 또는 두 요소가 교차하는 양이 요청된 양만큼 변경될 때 실행되는 콜백 함수를 등록해서 사용할 수 있다. 
+
+일단은 useRef로 등록된 div 태그가 화면에 감지될 때마다 callback 함수가 호출되도록 하였다.
+- 구현 코드    
+```js
+// /src/pages/Products.jsx 
+export default function Products() {
+
+  const target = useRef();
+  
+  useEffect(() => {
+      let callback = (entries, observer) => {
+        if (entries[0].isIntersecting) {
+          console.log(
+            `observer가 호출되었어요. entries : ${{
+              entries,
+            }} , observer : ${observer}`
+          );
+        }
+      };
+  
+      let observer = new IntersectionObserver(callback, {
+        root: null, //default값은 viewPort이다.
+        rootMargin: "0px", //교차점을 계산하기 전에 루트 요소 경계 상자의 각 측면을 늘리거나 줄이는 역할. 
+        //threshold의 값이 1.0이면 모든 픽셀이 표시될 때까지 콜백을 실행하지 않음
+        //값이 0이면 단 하나의 픽셀이라도 표시되는 즉시 콜백이 실행됨을 의미. 
+        threshold: 1.0, 
+      });
+  
+      if (target.current) {
+        observer.observe(target.current);
+      }
+  
+      return () => {
+        observer.disconnect();
+      };
+
+  }, [fetchNextPage, hasNextPage, data]);
+
+  return (
+    <div ref={target} className="w-32 h-10 bg-red-600">
+      Intersection 타겟
+    </div>
+  );
+}
+```
+    
+- `if (entries[0].isIntersecting)` 조건을 넣어준 이유는 target이 화면이 들어올때와 나갈때 모두 콜백함수가 호출되기 때문에 들어왔을때만 호출되도록 하기 위해서이다.
+
+- 여기까지의 구현화면
+![intersection 구현](/images/intersection-middle.gif)
+
+- Intersection 타겟이 화면이 감지될때마다 콜백 함수가 실행되어 console에 “observer가 호출되었어요.” 문구가 뜬다.
+
+### 2. firebase로 데이터 가져오기
+
+2-1. firebase Realtime Database의 “규칙” 탭에서 정렬해서 가져올 키를 index 설정해준다.
+
+ 나는 “createdAt” 필드 기준으로 가져오도록 했다.
+
+![firebase rules](/images/intersection-firebase.png)
+
+2-2. firebase에서 정해진 Limit개수만큼 최신 데이터(내림차순)부터 가져오도록 구현 
+
+(참고 : https://firebase.google.com/docs/database/web/lists-of-data?hl=ko#sort_data)
+
+```js
+// api/database.js
+export async function getProducts(pageParam, limit=5) {
+  const result = [];
+  await get(
+    query(
+      ref(db, "products"),
+      orderByChild("createdAt"), //정렬해서 가져올 기준 설정
+      endBefore(pageParam ?? ""), // 가져올 데이터의 범위 설정. 
+      limitToLast(limit) // 가져올 개수 설정 
+    )
+  ).then((snapshot) => {
+    if (snapshot.exists()) {
+	//snapshot.val()에는 가져온 데이터의 순서 정보에 대한 데이터가 없기 때문에 forEach를 사용해서 result에 담아주었다. 
+      snapshot.forEach((child) => {
+        result.unshift(child.val());
+      });
+    } else {
+      return [];
+    }
+  });
+//데이터 원하는 개수 나오는지 찍어보기
+console.log("result", result);
+}
+```
+
+- snapshot.values()로 데이터를 가져온다면 정렬된 결과가 나오지 않는다. snapshot.val()에는 가져온 데이터의 순서의 정보에 대한 데이터가 없기 때문이다.
+- limitToLast(5) : 가져온 데이터의 뒤에서부터 5개를 가져오겠다.
+- 최신 데이터부터(내림차순) 가져오기 위해 `endBefore`과 `limitToLast`, `result.unshift`를 썼다.
+- 오름차순으로 가져오려면 `startAt`, `limitToStart`, `result.push`를 쓰면 된다.
+
+2-3. 원하는 대로 데이터가 잘 나오는지 확인하기
+![firebase로 가져온 데이터](/images/intersection-data.png)
+
+getProduct함수를 observer의 callback 함수에서 호출하게 해서 정해진 개수와 내림차순으로 잘 나오는 지 확인했다. 
+이제는 React Query의 infinite query를 연결해보자
+
+
+### react-query의 useInfiniteQuery 구현
+
+useInfiniteQuery는 다음과 같이 구현하였다. 
+```js
+const { data, error, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ["products"],
+    queryFn: ({ pageParam = null }) => getProducts(pageParam),
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextCursor ?? undefined;
+    },
+    staleTime: 60 * 1000,
+  });
+```
+- queryFn
+    - 처음 query를 호출할 때 사용된다.
+    - 다음 페이지를 호출할 때는 fetchNextPage(pageParam)을 호출해야 한다.
+    
+- getNextPageParam
+    - 다음 페이지를 호출할 때 매개변수로 넣을 값이다.
+    - 다음 페이지가 없을 경우에는 undefined를 리턴하도록 해주어야 한다.
+    - 나는 firebase를 통해 데이터를 가져온 갯수가 내가 설정한 Limit과 같을 경우 마지막 데이터의 createAt을 nextCursor로 설정해줄 것이다.
+    
+- fetchNextPage
+    - 다음 페이지의 데이터를 가져올 때 호출할 메서드이다.
+    - fetchNextPage를 호출하면 pageParam에 getNextPageParam 정보가 들어간다. 
+    - 타깃이 intersection 되었을 때 이 함수를 호출해서 다음 페이지를 가져오도록 할 것이다.
+    
+- hasNextPage
+    - 다음 페이지가 존재하는지 여부를 나타내며, getNextPageParam에서 반환한 값이 undefined이면 false 아니면 true가 된다.
+
+- getProducts()부터 리턴되는 데이터 형태를 아래처럼 세팅해주었다. 그래야 getNextPageParam에서 nextCursor를 사용할 수 있다.
+  - 다음 페이지가 있을 경우 `{data: [...], nextCursor: 1680882320}`
+  - 다음 페이지가 없을 경우 `{data: []}` 
+
+이제 observer intersection, firebase를 통한 데이터 가져오기, react-query의 useInfiniteQuery를 연결해보자
+
+## intersection observer, firebase, useInfiniteQuery 연결
+
+```jsx
+// /src/hooks/useProducts.jsx
+export default function useProducts() {
+  const queryClient = useQueryClient();
+
+  const productsQuery = useInfiniteQuery({
+    queryKey: ["products"],
+    queryFn: ({ pageParam = null }) => getProducts(pageParam),
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextCursor ?? undefined;
+    },
+    staleTime: 60 * 1000,
+  });
+
+return { productsQuery };
+}
+```
+
+```jsx
+// /src/pages/Products.jsx
+import React, { useEffect, useRef } from "react";
+import ProductCard from "../components/ProductCard";
+import useProducts from "../hooks/useProducts";
+import Spinner from "../components/Spinner";
+
+export default function Products() {
+  const target = useRef();
+
+//useInfiniteQuery는 커스텀 훅으로 만들어서 import 시켰다.
+  const {
+    productsQuery: { data, error, isFetching, fetchNextPage, hasNextPage },
+  } = useProducts();
+
+  useEffect(() => {
+    let callback = (entries) => {
+      if (entries[0].isIntersecting) {
+        // Spinner 컴포넌트가 감지되면 fetchNextPage() 호출
+        fetchNextPage();
+      }
+    };
+
+    let observer = new IntersectionObserver(callback, {
+      root: null,
+      rootMargin: "0px",
+      threshold: 1.0,
+    });
+
+    if (target.current) {
+      observer.observe(target.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [fetchNextPage, hasNextPage, data]);
+
+  return (
+    <>
+      {!!data || isFetching || <>등록된 상품이 없습니다.</>}
+
+      {/* useInfiniteQuery로부터 반환된 data 보여주기 */}
+      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 p-5">
+        {data &&
+          data.pages.map((page) => {
+            return page.data.map((product) => (
+                <ProductCard product={product} key={product.id} />
+                ));
+              })}
+      </ul>
+
+      {/* "Intersection 타겟" 대신 Spinner 컴포넌트를 추가해주었다. */}
+      {(isFetch || hasNextPage) && (
+        <div ref={target} >
+          <Spinner/>
+        </div>
+      )}
+
+      {error && <>{error}</>}
+    </>
+  );
+}
+```
+
+
+
+```jsx
+///src/api/database.js
+export async function getProducts(pageParam = "", limit = 4) {
+  const result = [];
+  await get(
+    query(
+      ref(db, "products"),
+      orderByChild("createdAt"),
+      endBefore(pageParam ?? ""),
+      limitToLast(limit)
+    )
+  ).then((snapshot) => {
+    if (snapshot.exists()) {
+      snapshot.forEach((child) => {
+        result.unshift(child.val());
+      });
+    } else {
+      return [];
+    }
+  });
+  // useInfiniteQuery에서 사용할 수 있도록 data, nextCursor 세팅해주기
+  if (result.length === limit) {
+    return { data: result, nextCursor: result[limit - 1].createdAt };
+  } else {
+    return { data: result };
+  }
+}
+```
+
+
+```js
+import React from "react";
+import FadeLoader from "react-spinners/FadeLoader";
+
+export default function Spinner() {
+  return (
+    <FadeLoader
+      className="mx-auto"
+    />
+  );
+}
+
+```
+
+
+### 참고
+
+- [snapshot.val에 관련된 에러]([https://stackoverflow.com/questions/75195271/firebase-realtime-database-orderbychild-not-working-as-expected-even-after-re](https://stackoverflow.com/questions/75195271/firebase-realtime-database-orderbychild-not-working-as-expected-even-after-re))
+- [firebase 데이터 가져오기](https://firebase.google.com/docs/database/web/lists-of-data?hl=ko#sort_data)
+- [useInfiniteQuery](https://tanstack.com/query/v4/docs/react/reference/useInfiniteQuery)
+
+

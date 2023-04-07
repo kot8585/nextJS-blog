@@ -2,9 +2,20 @@ import Header from "@/components/Header";
 import SideBar from "@/components/SideBar";
 import { DarkModeProvider } from "../context/DarkModeContext";
 import "./globals.css";
-import { getSortedPostsData } from "@/utils/post";
+import { getSortedPostsData } from "@/service/post";
 import Recoil from "@/components/Recoil";
-import OutsideDetector from "@/hooks/OutsideDetector";
+import { Metadata } from "next";
+
+export const metadata:Metadata = {
+  title: {
+    default: 'Moon.dev',
+    template: '%s'
+  }, 
+  description: '프론트엔드 개발자 Moon',
+  icons: {
+    icon: '/favicon.ico',
+  }
+}
 
 export default async function RootLayout({
   children,
@@ -28,12 +39,10 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: setThemeMode }} />
         <DarkModeProvider>
           <Recoil>
+            <SideBar posts={posts} />
             <Header />
             <section className="flex w-full">
-              <SideBar posts={posts} />
-              <OutsideDetector>
                 <main className="h-full w-full items-end">{children}</main>
-              </OutsideDetector>
             </section>
           </Recoil>
         </DarkModeProvider>

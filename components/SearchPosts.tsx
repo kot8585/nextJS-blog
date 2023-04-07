@@ -2,7 +2,7 @@
 
 import { GoSearch } from "react-icons/go";
 import { ChangeEvent, useState } from "react";
-import { PostData } from "../utils/post";
+import { PostData } from "../service/post";
 import Helmet from "./Helmet";
 import PostsGrid from "./PostsGrid";
 
@@ -20,9 +20,9 @@ export default function SearchPosts({ posts }: Props) {
     );
   }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => 
     setText(e.target.value);
-  };
+  
 
   return (
     <section className="w-5/6 flex-col mx-auto  mt-20">
@@ -44,7 +44,8 @@ export default function SearchPosts({ posts }: Props) {
             : "검색 결과가 없습니다.")}
       </p>
       {/* TODO: postList 만들기 */}
-      <ul>{filterPostData && <PostsGrid posts={filterPostData} />}</ul>
+      
+       {filterPostData && <PostsGrid posts={filterPostData} />}
     </section>
   );
 }

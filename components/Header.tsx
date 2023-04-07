@@ -1,8 +1,7 @@
 "use client";
 
 import { BsFillSunFill, BsSearch } from "react-icons/bs";
-import { FaRegMoon } from "react-icons/fa";
-import { GiHamburgerMenu } from "react-icons/gi";
+import { FaRegMoon, FaBars } from "react-icons/fa";
 import Link from "next/link";
 import { useDarkMode } from "@/context/DarkModeContext";
 import { DarkModeContextType } from "../context/DarkModeContext";
@@ -22,11 +21,7 @@ export default function Header() {
       <div className={DIV_CLASS}>
         <button onClick={() => setIsClicked(!isClicked)}>
           {
-            <GiHamburgerMenu
-              className={`transition-all duration-500 ${
-                isClicked ? "rotate-90" : ""
-              }`}
-            />
+            <FaBars />
           }
         </button>
         <Link href="/" className="ml-2">
@@ -34,12 +29,10 @@ export default function Header() {
         </Link>
       </div>
       <div className={DIV_CLASS}>
-        <button className="hover:bg-bgSub p-1 rounded-full">
-          <BsSearch
-            onClick={() => {
+        <button className="hover:bg-bgSub p-1 rounded-full" onClick={() => {
               router.push("/search");
-            }}
-          />
+            }}>
+          <BsSearch/>
         </button>
         <button
           className="hover:bg-bgSub p-1 rounded-full "

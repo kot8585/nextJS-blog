@@ -1,6 +1,6 @@
 "use client";
 
-import { Heading } from "@/utils/post";
+import { Heading } from "@/service/post";
 import React from "react";
 
 type Props = {
@@ -17,7 +17,6 @@ export default function Toc({ headings }: Props) {
               href={heading.link}>{heading.text}</a>
             </li>
           );
-       
       })}
     </ul>
   );

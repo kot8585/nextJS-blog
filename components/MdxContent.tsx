@@ -15,7 +15,7 @@ const Heading2 = ({ children}: Props) => {
   const idText = heading.replace(/ /g, "_");
 
   return (
-    <h2 id={idText} className="scroll-mt-16">
+    <h2 id={idText} className="scroll-mt-16 text-2xl font-bold">
     {children}
     </h2>
   );
@@ -26,7 +26,7 @@ const Heading3 = ({ children}: Props) => {
   const idText = heading.replace(/ /g, "_");
 
   return (
-    <h3 id={idText} className="scroll-mt-16 text-xl">
+    <h3 id={idText} className="scroll-mt-16 text-xl font-bold">
     {children}
     </h3>
   );

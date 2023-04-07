@@ -1,6 +1,6 @@
-import { PostData } from '../utils/post';
+import { PostData } from '../service/post';
 import Link from 'next/link';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { clickedSideBarAtom } from '@/state/ClickedSideBarAtom';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function Categories({ posts }: Props) {
-  const [isClicked, setIsClicked] = useRecoilState(clickedSideBarAtom);
+  const setIsClicked = useSetRecoilState(clickedSideBarAtom);
 
   let init: { [category: string]: number } = {};
   const categoryCount = posts.reduce((accumulator, currentValue) => {
@@ -27,7 +27,7 @@ export default function Categories({ posts }: Props) {
           return (
             <Link
               key={category}
-              href={`/posts/category/${category}`}
+              href={`/category/${category}`}
               onClick={() => setIsClicked(false)}
               className="hover:-translate-y-0.5"
             >
