@@ -6,9 +6,9 @@ description: "비동기 데이터 사용하기"
 imageUrl: "/images/javascript.png"
 ---
 
-### 1\. 비동기에서 리턴된 데이터를 사용하는 방법
+## 1\. 비동기에서 리턴된 데이터를 사용하는 방법
 ​
-내가 원하는 것은 아래 예시 처럼 비동기코드에서 리턴된 데이터를 비동기 함수 밖에서 사용하는 것이었다. 결과적으로 동기로 실행되는 코드에서 비동기 코드를 사용하는 것은 못한다. 
+내가 원하는 것은 아래 예시 처럼 비동기코드에서 리턴된 데이터를 동기 함수에서 사용하는 것이었다. 그래서 다음과 같이 작성하였다.
 ​
 ```javascript
 const address = fetch("https://jsonplaceholder.typicode.com/users/1")
@@ -38,7 +38,7 @@ async function getFetchData(){
 console.log(getFetchData()); //Promise { <pending> }
 ```
 ​
-### 2.`Promise { <pending> }`가 리턴되는 이유
+## 2. Promise pending 이 리턴되는 이유
 ​
 \- promise의 후속 처리 메서드인 then, catch, finally 메서드와 async함수는 언제나 promise를 리턴하기 때문이다.
 ​
