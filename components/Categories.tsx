@@ -27,7 +27,7 @@ export default function Categories({ posts }: Props) {
           return (
             <Link
               key={category}
-              href={`/posts/category/${category}`}
+              href={`/category/${category}`}
               onClick={() => setIsClicked(false)}
               className="hover:-translate-y-0.5"
             >
