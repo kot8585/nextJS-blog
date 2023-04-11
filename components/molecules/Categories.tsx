@@ -7,8 +7,7 @@ type Props = {
   posts: PostData[];
 };
 
-export default function Categories
-({ posts }: Props) {
+export default function Categories({ posts }: Props) {
   const setIsClicked = useSetRecoilState(clickedSideBarAtom);
 
   let init: { [category: string]: number } = {};

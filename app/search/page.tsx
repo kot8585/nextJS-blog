@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { getSortedPostsData } from "../../service/post";
-import PostSearch from "@/components/templates/PostSearch";
+import PostSearch from "@/components/organisms/PostSearch";
 
 export const metadata: Metadata = {
   title: "Post Search",

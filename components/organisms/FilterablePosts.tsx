@@ -11,5 +11,6 @@ export default function FilterablePosts({ posts, category }: Props) {
   const filteredPosts = posts.filter(
     (post) => post.frontMatter.category === category
   );
+
   return <PostsGrid posts={filteredPosts} />;
 }

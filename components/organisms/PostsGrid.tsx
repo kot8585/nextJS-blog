@@ -1,5 +1,5 @@
 import { PostData } from "../../service/post";
-import PostCard from "../organisms/PostCard";
+import PostCard from "../molecules/PostCard";
 
 type Props = {
   posts: PostData[];

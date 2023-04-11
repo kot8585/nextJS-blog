@@ -4,7 +4,7 @@ import "./globals.css";
 import { getSortedPostsData } from "@/service/post";
 import Recoil from "@/components/Recoil";
 import { Metadata } from "next";
-import Header from "@/components/molecules/Header";
+import Header from "@/components/organisms/Header";
 
 export const metadata:Metadata = {
   title: {
