@@ -46,10 +46,8 @@ console.log(getFetchData()); //Promise { <pending> }
 ​
 \- 상태가 pending인 이유는 console.log(getFetchData()) 함수가 fetch() 요청 직후 resolve될 때까지 기다리지 않고 실행되기 때문이다. 
 ​
-### 3\. 그렇다면 data를 가져오기 위해서는 어떻게 해야할까?
-​
-3-1. 한번 더 then()을 통해 promise의 결과에 접근하기 
-​
+## 3\. 그렇다면 data를 가져오기 위해서는 어떻게 해야할까?
+### 3-1. 한번 더 then()을 통해 promise의 결과에 접근하기 
 ```js
 const address = fetch("https://jsonplaceholder.typicode.com/users/1")
   .then((response) => response.json())
@@ -68,8 +66,7 @@ const printAddress = () => {
 printAddress();
 ```
 ​
-3-2. await를 사용하여 promise의 결과에 접근하기
-​
+### 3-2. await를 사용하여 promise의 결과에 접근하기
 ```js
 const address = fetch("https://jsonplaceholder.typicode.com/users/1")
   .then((response) => response.json())
