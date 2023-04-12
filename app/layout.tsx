@@ -1,6 +1,6 @@
 import SideBar from "@/components/organisms/SideBar";
 import { DarkModeProvider } from "../context/DarkModeContext";
-import "./globals.css";
+import "/styles/globals.css";
 import { getSortedPostsData } from "@/service/post";
 import Recoil from "@/components/Recoil";
 import { Metadata } from "next";

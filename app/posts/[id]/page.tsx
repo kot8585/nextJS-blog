@@ -2,7 +2,7 @@ import Banner from "@/components/molecules/Banner";
 import { MdxContent } from "@/components/MdxContent";
 import Toc from "@/components/molecules/Toc";
 import { getAllPostIds, getPostData } from "@/service/post";
-import '../../../themes/prism-atom_dark.css'
+import '../../../styles/prism-atom_dark.css'
 import { Metadata } from "next";
 
 type Props = {

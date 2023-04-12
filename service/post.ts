@@ -8,8 +8,6 @@ import remarkGfm from "remark-gfm";
 import rehypePrism from 'rehype-prism-plus';
 import { cache } from "react";
 
-
-
 export type FrontMatter = {
   title: string;
   date: string;
@@ -30,7 +28,6 @@ export type Heading = {
   count: number;
 };
 
-
 export type Post<TFrontMatter> = {
   source: MDXRemoteSerializeResult;
   frontMatter: TFrontMatter;
@@ -47,8 +44,6 @@ const postsDirectory = path.join(process.cwd(), "posts");
 
 export const getSortedPostsData = cache(async () => {
 console.log('getSortedPostsData 불림');
-// })
-// export async function getSortedPostsData(): Promise<PostData[]> {
   const fileNames = await readdir(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
     const id = fileName.replace(/\.mdx$/, "");
@@ -64,7 +59,6 @@ console.log('getSortedPostsData 불림');
       frontMatter: data as FrontMatter,
     };
   });
-  // Sort posts by date
   return allPostsData.sort((a, b) =>  (a.frontMatter.date < b.frontMatter.date) ? 1 : -1 );
 })
 
