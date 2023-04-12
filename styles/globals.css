@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-main: #f6f6f6;
+  --text-main: #000000;
+  --bg-sub: #e8e8e8;
+  --border-main: #dedede;
+  --bg-code: #ffffff;
+  --brand-main: #f08c00;
+}
+
+html.dark {
+  --bg-main: #232833;
+  --bg-sub: #3D4452;
+  --text-main: #f6f7f9;
+  --border-main: #3f434a;
+  --bg-code: #16181d;
+  --brand-main: #fab005;
+}
+
+html {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+html,
+body {
+  height: 100vh;
+  overflow-y: auto;
+}
+

@@ -1,9 +1,8 @@
-import Banner from "@/components/Banner";
-import Helmet from "@/components/Helmet";
+import Banner from "@/components/molecules/Banner";
 import { MdxContent } from "@/components/MdxContent";
-import Toc from "@/components/Toc";
-import { FrontMatter, getAllPostIds, getPostData } from "@/service/post";
-import '../../../themes/prism-atom_dark.css'
+import Toc from "@/components/molecules/Toc";
+import { getAllPostIds, getPostData } from "@/service/post";
+import '../../../styles/prism-atom_dark.css'
 import { Metadata } from "next";
 
 type Props = {
@@ -23,8 +22,6 @@ export default async function PostPage({ params: { id } }: Props) {
 
   return (
     <>
-      <Helmet title={frontMatter.title} />
-
       <article className="h-full mx-auto">
         <Banner
           title={frontMatter.title}

@@ -1,11 +1,17 @@
+import { Metadata } from "next";
 import { getSortedPostsData } from "../../service/post";
-import SearchPosts from "@/components/SearchPosts";
+import PostSearch from "@/components/organisms/PostSearch";
 
+export const metadata: Metadata = {
+  title: "Post Search",
+  description : "Search Posts in Moon.dev blog"
+}
 export default async function SearchPage() {
+   
   const posts = await getSortedPostsData();
   return (
     <>
-      <SearchPosts posts={posts} />
+      <PostSearch posts={posts} />
     </>
   );
 }

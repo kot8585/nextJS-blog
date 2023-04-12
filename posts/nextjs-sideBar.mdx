@@ -85,7 +85,7 @@ useCapture 옵션으로 이벤트를 캐치할 이벤트 전파 단계(캡처링
 줘야한다. 그렇지 않으면 사이드바가 보이지 않는다. 아래처럼.
 ![sidebar-error](/images/sidebar-error.gif)
 
-삼단 메뉴바 버튼 이벤트는 isClicked값을 true로 바꾸는데 state값이 바뀌었으므로 SideBar의 리렌더링이 일어나면서 ref.current 값이 null이 아니게 되므로 if의 조건절이 충족되어서 다시 isClicked의 값이 false로 바뀌게 된다. 
+SideBar컴포넌트의 useEffect에서 등록된 document의 클릭이벤트의 로직이 달라지기 때문이다.   삼단 메뉴바 버튼 이벤트는 isClicked값을 true로 바꾸는데 state값이 바뀌었으므로 SideBar의 리렌더링이 일어나면서 ref.current 값이 null이 아니게 되므로 if의 조건절이 충족되어서 다시 isClicked의 값이 false로 바뀌게 된다. 
 
 따라서 addEventListener의 세번째 인자값으로 true를 주어서 캡쳐링 단계에서 이벤트 함수가 실행될 수 있도록 하였다.  
 
@@ -182,7 +182,7 @@ export default function SideBar({ posts }: Props) {
 </details>
 
 
-참고 
+## 참고 
 -  https://blog.logrocket.com/useeffect-hook-complete-guide/#importance-dependency-array
 
 - https://blog.logrocket.com/understanding-react-useeffect-cleanup-function/

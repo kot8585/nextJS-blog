@@ -3,7 +3,7 @@ title: "무한 스크롤 기능 구현해보기"
 date: "2023-04-08"
 category: "React"
 imageUrl: /images/react.png
-description: "Next.js에서 다크모드 적용시 깜빡이는 문제를 해결해보자"
+description: "useInfiniteQuery를 사용해서 무한스크롤 구현하기"
 ---
 
 ## 서론
@@ -22,7 +22,7 @@ description: "Next.js에서 다크모드 적용시 깜빡이는 문제를 해결
 
 ![무한스크롤 구현 화면](/images/intersection-complete.gif)
 
-### 구현 순서
+## 구현 순서
 - intersection observer 인스턴스 생성해서 observer에 등록한 콜백함수가 잘 호출되는지 확인하기
 - firebase api를 이용해서 데이터가 내림차순으로 주어진 limit만큼 잘 나오는지 확인
 - React Query의 useInfiniteQuery 구현하기
@@ -30,7 +30,6 @@ description: "Next.js에서 다크모드 적용시 깜빡이는 문제를 해결
 
 
 ## 구현 방법
-
 ### 1. Intersection observer 인스턴스 생성
 
 모니터링 하려는 요소가 다른 요소에 들어오거나 나갈때마다 또는 두 요소가 교차하는 양이 요청된 양만큼 변경될 때 실행되는 콜백 함수를 등록해서 사용할 수 있다. 
@@ -137,7 +136,7 @@ getProduct함수를 observer의 callback 함수에서 호출하게 해서 정해
 이제는 React Query의 infinite query를 연결해보자
 
 
-### react-query의 useInfiniteQuery 구현
+### 3. react-query의 useInfiniteQuery 구현
 
 useInfiniteQuery는 다음과 같이 구현하였다. 
 ```js
@@ -173,7 +172,7 @@ const { data, error, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery
 
 이제 observer intersection, firebase를 통한 데이터 가져오기, react-query의 useInfiniteQuery를 연결해보자
 
-## intersection observer, firebase, useInfiniteQuery 연결
+### 4. intersection observer, firebase, useInfiniteQuery 연결
 
 ```jsx
 // /src/hooks/useProducts.jsx
@@ -305,7 +304,7 @@ export default function Spinner() {
 ```
 
 
-### 참고
+## 참고
 
 - [snapshot.val에 관련된 에러]([https://stackoverflow.com/questions/75195271/firebase-realtime-database-orderbychild-not-working-as-expected-even-after-re](https://stackoverflow.com/questions/75195271/firebase-realtime-database-orderbychild-not-working-as-expected-even-after-re))
 - [firebase 데이터 가져오기](https://firebase.google.com/docs/database/web/lists-of-data?hl=ko#sort_data)

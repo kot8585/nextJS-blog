@@ -1,4 +1,4 @@
-import FilterablePosts from "@/components/FilterablePosts";
+import FilterablePosts from "@/components/organisms/FilterablePosts";
 import { getSortedPostsData } from "@/service/post";
 import { Metadata } from "next";
 import React from "react";
