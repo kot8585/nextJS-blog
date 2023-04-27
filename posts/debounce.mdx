@@ -1,0 +1,78 @@
+---
+title: "검색기능에 debounce를 적용해보자"
+date: "2023-04-26"
+category: "React"
+imageUrl: /images/react.png
+description: "debouncing은 연속된 이벤트가 잠잠해졌을 시 실행. throttling은 일정시간마다 실행"
+---
+
+포스트를 검색할 때 debouncing을 적용함으로써 성능을 높여보자.
+
+## debouncing? throttling?
+
+- debouncing은 이벤트가 연속적으로 발생할 때는 로직이 실행되지 않다가 이벤트가 정지된 시점부터 일정시간이 지나면 로직을 실행하도록 하는 것이다.
+- throttling은 일정시간마다 로직을 실행하도록 하고 그 사이에 발생하는 이벤트들은 무시한다.
+- debouncing과 throttling을 통해 불필요한 로직과 네트워크 요청을 하지 않음으로써 과부하를 줄이고 성능을 높일 수 있다..
+
+## debouncing을 구현해보자
+
+나는 사용자가 검색어를 입력하다가 마지막으로 입력한지 0.5초가 지나면 해당 검색어로 포스트를 검색하는 로직을 실행할 것이다.
+
+lodash라는 라이브러리로 간단하게 구현할 수 있는데 공부하려고 하는거니까 직접 구현해봤다.
+
+구현하는 방법은
+
+- 0.5초가 지나기 전에 이벤트가 발생하면 timeoutId를 clear시키고 다시 setTimeout을 통해 timeoutId를 세팅해준다.
+- timeoutId는 useRef를 사용해서 컴포넌트가 재렌더링되어도 초기화되지 않도록 해줄것이다.
+
+```js
+  const [text, setText] = useState<string>("");
+  const [searchedPosts, setSearchedPosts] = useState<PostData[] | undefined>(undefined);
+  // timeoutId를 useRef로 설정해서 재렌더링되어도 유지되도록 한다.
+  const timeoutId = useRef<number | null>(null);
+
+//검색어로 포스트 검색
+  const searchByText = (text: string) => {
+    if (!text) {
+      setSearchedPosts(undefined);
+      return;
+    }
+    const searchPosts = posts.filter((post) =>
+      post.content.toLowerCase().includes(text)
+    );
+    setSearchedPosts(searchPosts);
+  };
+
+  // delay만큼 시간이 지나면 callback함수 실행
+  const debounce = (callback: (text: string) => void, delay: number) => {
+    if (timeoutId.current) {
+      window.clearTimeout(timeoutId.current);
+    }
+    timeoutId.current = window.setTimeout(callback, delay);
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+    debounce(() => searchByText(e.target.value), 500);
+  };
+
+  return (
+    <section>
+      <input
+          className="w-full h-14 p-2 pl-12 bg-bgSub text-xl outline-none focus:border"
+          placeholder="검색어를 입력해주세요"
+          value={text}
+          onChange={handleChange}
+          autoFocus
+        />
+        <p className="py-5">
+        {text &&
+          searchedPosts &&
+          (searchedPosts.length > 0
+            ? `총 ${searchedPosts.length}개의 포스트를 찾았습니다.`
+            : "검색 결과가 없습니다.")}
+      </p>
+      {searchedPosts && <PostsGrid posts={searchedPosts} />}
+    </section>
+  )
+```
