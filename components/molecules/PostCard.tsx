@@ -1,7 +1,7 @@
 import React from "react";
 import Date from "@/components/atoms/Date";
 import Link from "next/link";
-import { PostData } from '@/service/post';
+import { PostData } from "@/service/post";
 import Image from "next/image";
 
 type Props = {
@@ -12,8 +12,8 @@ export default function PostCard({
   postData: { id, content, frontMatter },
 }: Props) {
   return (
-    <Link href={`/posts/${id}`}>
-      <article className="rounded-md overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 border border-borderMain">
+    <li className="rounded-md overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 border border-borderMain">
+      <Link href={`/posts/${id}`}>
         <Image
           className="w-full aspect-video"
           src={frontMatter.imageUrl}
@@ -37,7 +37,7 @@ export default function PostCard({
             <Date dateString={frontMatter.date} />
           </div>
         </div>
-      </article>
-    </Link>
+      </Link>
+    </li>
   );
 }

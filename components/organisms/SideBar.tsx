@@ -21,31 +21,34 @@ export default function SideBar({ posts }: Props) {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       assertIsNode(e.target);
-      
+
       if (ref.current && !ref.current.contains(e.target)) {
         setIsClicked(false);
       }
     };
 
-    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener("click", handleClickOutside, true);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener("click", handleClickOutside, true);
     };
   }, [setIsClicked]);
 
-  if(!isClicked)
-    return null;
+  if (!isClicked) return null;
 
   return (
-    <aside 
-     ref={ref}
-      className='lg:w-1/5 min-w-[230px] shadow-xl max-h-screen h-full z-30 fixed flex-col bg-bgMain p-2 mb-14 flex'
+    <aside
+      ref={ref}
+      className="lg:w-1/5 min-w-[230px] shadow-xl max-h-screen h-full z-30 fixed flex-col bg-bgMain p-2 mb-14 flex"
     >
-      <button className="self-end text-3xl font-bold"
-      onClick={() => setIsClicked(false)}><FaTimes/></button>
-      <Categories posts={posts}/>
-      <UserInfo/>
+      <button
+        className="self-end text-3xl font-bold"
+        onClick={() => setIsClicked(false)}
+      >
+        <FaTimes />
+      </button>
+      <Categories posts={posts} />
+      <UserInfo />
     </aside>
   );
 }
