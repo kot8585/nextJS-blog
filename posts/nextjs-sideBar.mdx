@@ -5,17 +5,20 @@ category: "Next.js"
 description: "버튼을 클릭하면 사이드바를 보여주고 사이드바가 아닌 곳을 클릭했을 시 사이드바를 화면에서 없애기"
 imageUrl: "/images/nextjs.png"
 ---
-SideBar밖에서 클릭이 감지되었을 때 SideBar를 화면에서 보이지 않도록 하는 기능을 추가하면서 알아본 것을 정리하고자 한다. 사용한 기술스택은 Next.js 13, tailwind, recoil이다. 
+
+SideBar밖에서 클릭이 감지되었을 때 SideBar를 화면에서 보이지 않도록 하는 기능을 추가하면서 알아본 것을 정리하고자 한다. 사용한 기술스택은 Next.js 13, tailwind, recoil이다.
 
 ## 완성된 화면
+
 ![sidebar-complete](/images/sidebar-complete.gif)
 
-
 ## 구현을 하면서
-SideBar의 UI 구현한 다음 SideBar밖에서의 클릭을 감지하기 위해 다른 블로그의 글을 참고해 내 프로젝트에서 동작하도록 코드를 작성했다.
-(참고 : https://blog.logrocket.com/detect-click-outside-react-component-how-to/ ) 
 
-- 구현한 코드 
+SideBar의 UI 구현한 다음 SideBar밖에서의 클릭을 감지하기 위해 다른 블로그의 글을 참고해 내 프로젝트에서 동작하도록 코드를 작성했다.
+(참고 : https://blog.logrocket.com/detect-click-outside-react-component-how-to/ )
+
+- 구현한 코드
+
 ```js
 "use client";
 
@@ -28,13 +31,13 @@ import UserInfo from "./UserInfo";
 import { FaTimes } from "react-icons/fa";
 
 type Props = {
-  posts: PostData[];
+  posts: PostData[],
 };
 
 export default function SideBar({ posts }: Props) {
   const [isClicked, setIsClicked] = useRecoilState(clickedSideBar);
 
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef < HTMLDivElement > null;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -42,52 +45,56 @@ export default function SideBar({ posts }: Props) {
         setIsClicked(false);
       }
     };
-    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener("click", handleClickOutside, true);
     return () => {
-      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener("click", handleClickOutside, true);
     };
   }, []);
 
-  if(!isClicked)
-    return null;
+  if (!isClicked) return null;
 
   return (
-    <aside 
+    <aside
       ref={ref}
-      className='lg:w-2/5 min-w-[250px] shadow-xl max-h-screen h-full z-30 fixed flex-col bg-bgMain p-2 mb-14 flex'
+      className="lg:w-2/5 min-w-[250px] shadow-xl max-h-screen h-full z-30 fixed flex-col bg-bgMain p-2 mb-14 flex"
     >
-      <button className="self-end text-3xl font-bold"
-      onClick={() => setIsClicked(false)}><FaTimes/></button>
-      <Categories posts={posts}/>
-      <UserInfo/>
+      <button
+        className="self-end text-3xl font-bold"
+        onClick={() => setIsClicked(false)}
+      >
+        <FaTimes />
+      </button>
+      <Categories posts={posts} />
+      <UserInfo />
     </aside>
   );
 }
 ```
-코드를 가져다 쓰면서 동작은 했는데 이해가 되지 않는 것들이 몇개 있었다. 해당 코드들이 어떤 경우에 필요한 것인지를 알아보고 내 프로젝트의 코드에도 사용할 필요가 있는지 판단해 필요없는 것들은 삭제하거나 내 프로젝트에 맞도록 변경하고자 한다.  
+
+코드를 가져다 쓰면서 동작은 했는데 이해가 되지 않는 것들이 몇개 있었다. 해당 코드들이 어떤 경우에 필요한 것인지를 알아보고 내 프로젝트의 코드에도 사용할 필요가 있는지 판단해 필요없는 것들은 삭제하거나 내 프로젝트에 맞도록 변경하고자 한다.
 
 ## 의문점 1️⃣ : addEventListener의 세번째 인자는 무엇이며 왜 true로 준 것일까?
 
 ### 1. addEventListener의 세번째 인자는 무엇인가?
 
-useCapture 옵션으로 이벤트를 캐치할 이벤트 전파 단계(캡처링 또는 버블링)를 지정한다. 생략하거나 false를 지정하면 버블링 단계에서 이벤트를 캐치하고, true를 지정하면 캡처링 단계에서 이벤트를 캐치한다. 
+useCapture 옵션으로 이벤트를 캐치할 이벤트 전파 단계(캡처링 또는 버블링)를 지정한다. 생략하거나 false를 지정하면 버블링 단계에서 이벤트를 캐치하고, true를 지정하면 캡처링 단계에서 이벤트를 캐치한다.
 
-이벤트 전파는 이벤트 객체가 전파되는 방향에 따라 다음과 같이 3단계로 구분할 수 있다. 
+이벤트 전파는 이벤트 객체가 전파되는 방향에 따라 다음과 같이 3단계로 구분할 수 있다.
 
 1. 캡쳐링 단계 : 이벤트가 상위 요소에서 하위 요소 방향으로 전파
 2. 타깃 단계 : 이벤트가 이벤트 타깃에 도달
 3. 버블링 단계 : 이벤트가 하위 요소에서 상위 요소 방향으로 전파
 
-간단하게 요약하자면 useCapture가 true일 경우 이벤트가 캡처링 단계에 실행, false일 경우 버블링 단계에 실행된다. 언제 이벤트가 실행되느냐의 차이다. 
+간단하게 요약하자면 useCapture가 true일 경우 이벤트가 캡처링 단계에 실행, false일 경우 버블링 단계에 실행된다. 언제 이벤트가 실행되느냐의 차이다.
 
 ### 2. 내 프로젝트의 코드에서도 세번째 인자로 true를 줘야하는가?
 
 줘야한다. 그렇지 않으면 사이드바가 보이지 않는다. 아래처럼.
 ![sidebar-error](/images/sidebar-error.gif)
 
-SideBar컴포넌트의 useEffect에서 등록된 document의 클릭이벤트의 로직이 달라지기 때문이다.   삼단 메뉴바 버튼 이벤트는 isClicked값을 true로 바꾸는데 state값이 바뀌었으므로 SideBar의 리렌더링이 일어나면서 ref.current 값이 null이 아니게 되므로 if의 조건절이 충족되어서 다시 isClicked의 값이 false로 바뀌게 된다. 
+SideBar컴포넌트의 useEffect에서 등록된 document의 클릭이벤트의 로직이 달라지기 때문이다. 삼단 메뉴바 버튼 이벤트는 isClicked값을 true로 바꾸는데 state값이 바뀌었으므로 SideBar의 리렌더링이 일어나면서 ref.current 값이 null이 아니게 되므로 if의 조건절이 충족되어서 다시 isClicked의 값이 false로 바뀌게 된다.
 
-따라서 addEventListener의 세번째 인자값으로 true를 주어서 캡쳐링 단계에서 이벤트 함수가 실행될 수 있도록 하였다.  
+따라서 addEventListener의 세번째 인자값으로 true를 주어서 캡쳐링 단계에서 이벤트 함수가 실행될 수 있도록 하였다.
 
 ## 의문점 2️⃣ : useEffect에서 아래의 warning이 났는데 왜 나는 것일까?
 
@@ -109,18 +116,19 @@ setIsClicked 함수는 변하지 않는 값이 맞다. 따라서 dependency로 �
 
 useEffect의 return 함수가 실행되는 경우는 2가지이다.
 
-- 컴포넌트가 unmount 될 시 
+- 컴포넌트가 unmount 될 시
 - 첫번째 useEffect의 실행 이후 dependency 배열의 값이 하나라도 변경되어 다시 useEffect의 콜백함수가 실행 되어야 할때 useEffect의 callback 함수 실행 이전에 return 함수가 실행되고 useEffect의 callback 함수가 실행된다.
 
 useEffect에서 return 함수를 사용함으로써 예기치 않은 동작을 방지할 수 있고 필요없는 함수를 정리함으로써 메모리 누수를 방지할 수 있다.
 
-참고한 블로그에서는 useEffect의 dependency의 배열로 준 값이 외부로부터 받기 때문에 변하지 않는 값이라고 확신할 수 없어서 return함수를 통해 eventListener를 정리해주는 코드를 쓴 것 같은데 
+참고한 블로그에서는 useEffect의 dependency의 배열로 준 값이 외부로부터 받기 때문에 변하지 않는 값이라고 확신할 수 없어서 return함수를 통해 eventListener를 정리해주는 코드를 쓴 것 같은데
 
-내 코드의 경우에는 setIsClicked함수는 변하지 않는 값이고  isClicked값이 false일 경우 Sidebar를 unmount 시키는게 아니라 SideBar 컴포넌트에서 null을 리턴하는 방법을 사용하기 때문에 useEffect 훅의 return 함수가 호출될 일이 없다고 판단해서 필요없지 않을까라는 생각이 들었다.
+내 코드의 경우에는 setIsClicked함수는 변하지 않는 값이고 isClicked값이 false일 경우 Sidebar를 unmount 시키는게 아니라 SideBar 컴포넌트에서 null을 리턴하는 방법을 사용하기 때문에 useEffect 훅의 return 함수가 호출될 일이 없다고 판단해서 필요없지 않을까라는 생각이 들었다.
 
-하지만 나중에 unmount를 시키는 방법으로 바뀔지도 모르고 추가기능을 도입하면서 useEffect의 dependency에 변경될 수 있는 값이 추가될 수 있기 때문에 혼란을 줄이기 위해서 useEffect에서 eventListener를 추가하는 경우에는 무조건 return 함수를 사용해서 정리해주는게 좋은 코드인 것 같다.
+하지만 나중에 unmount를 시키는 방법으로 바뀔지도 모르고 추가기능을 도입하면서 useEffect의 dependency에 변경될 수 있는 값이 추가될 수 있기 때문에 혼란을 줄이기 위해서 useEffect에서 eventListener를 추가하는 경우에는 return 함수를 사용해서 정리해주는게 좋은 코드인 것 같다.
 
 ## 완성된 코드
+
 최종으로 완성된 코드는 dependency로 setIsClicked를 추가해주었다. (바뀐게 별로 없네...?)
 
 <details>
@@ -138,51 +146,53 @@ import { FaTimes } from "react-icons/fa";
 import { assertIsNode } from "@/util/assertion";
 
 type Props = {
-  posts: PostData[];
+posts: PostData[];
 };
 
 export default function SideBar({ posts }: Props) {
   const [isClicked, setIsClicked] = useRecoilState(clickedSideBar);
 
-  const ref = useRef<HTMLDivElement>(null);
+const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      assertIsNode(e.target);
-      
+useEffect(() => {
+const handleClickOutside = (e: MouseEvent) => {
+assertIsNode(e.target);
+
       if (ref.current && !ref.current.contains(e.target)) {
         setIsClicked(false);
       }
     };
 
     document.addEventListener('click', handleClickOutside, true);
-    
+
     return () => {
       document.removeEventListener('click', handleClickOutside, true);
     };
-  }, [setIsClicked]);
 
-  if(!isClicked)
-    return null;
+}, [setIsClicked]);
 
-  return (
-    <aside 
+if(!isClicked)
+return null;
+
+return (
+<aside 
      ref={ref}
       className='lg:w-2/5 min-w-[250px] shadow-xl max-h-screen h-full z-30 fixed flex-col bg-bgMain p-2 mb-14 flex'
     >
-      <button className="self-end text-3xl font-bold"
-      onClick={() => setIsClicked(false)}><FaTimes/></button>
-      <Categories posts={posts}/>
-      <UserInfo/>
-    </aside>
-  );
+<button className="self-end text-3xl font-bold"
+onClick={() => setIsClicked(false)}><FaTimes/></button>
+<Categories posts={posts}/>
+<UserInfo/>
+</aside>
+);
 }
 
 ```
 </details>
 
 
-## 참고 
+## 참고
 -  https://blog.logrocket.com/useeffect-hook-complete-guide/#importance-dependency-array
 
 - https://blog.logrocket.com/understanding-react-useeffect-cleanup-function/
+```
