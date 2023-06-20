@@ -1,0 +1,186 @@
+---
+title: "프론트엔드 에러처리"
+date: "2023-06-16"
+category: "Next.js"
+imageUrl: /images/nextjs.png
+description: "ErrorBoundary로 에러처리하기"
+---
+
+### 문제점
+
+1. 포스트를 보여줄 때 댓글을 보여주는 컴포넌트에서 에러가 나면 포스트를 보여주는 컴포넌트까지 렌더링이 되지 않았다. 아래와 같이 말이다. 나는 댓글을 보여주는 컴포넌트만 에러 컴포넌트를 보여주고 싶었다.
+   ![error-original](/images/error-original.png)
+
+2. 현재는 useQuery를 할때 발생한 에러상태에 따라 알맞은 에러 상태를 보여주는 것을 공통화하고 싶었다.
+3. 데이터를 GET하는 과정에서 발생한 에러나 컴포넌트를 렌더링하는 과정에서 발생한 에러라면 에러 컴포넌트를 보여주고 PUT, DELETE, UPDATE 하는 과정에서 발생한 에러라면 toast를 띄워주고 싶었다.
+
+### 해결방법
+
+- ErrorBoundary를 사용해서 내가 원하는 범위까지만 ErrorFallback 컴포넌트가 렌더링되도록 하였다.
+- ErrorFallback 컴포넌트에서 Error의 status로 분기처리해서 상태에 따라 알맞은 에러메세지가 보이도록 하였다.
+- PUT, DELETE, UPDATE시 발생한 에러라면 useMutation의 onError에서 toast.error를 띄워주도록 하였다.
+
+### 해결 과정
+
+ErrorBoundary는 react의 공식 홈페이지에 나오는 Class형 컴포넌트를 사용해서 만들 수 있다. 하지만 나는 React의 ErrorBoundary 간단하게 사용할 수 있도록 만든 react-error-boundary라이브러리를 사용하였다. 간단하게 사용할 수 있기도 하고 React Query의 공식문서의 예시에서 react-error-boundary를 사용했기 때문이다.
+
+```javascript
+export default function PostDetail() {
+	return(
+			//PostContent 컴포넌트에서 에러가 발생하면
+      //ErrorFallBack컴포넌트를 렌더링한다.
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary
+                  onReset={reset}
+                  FallbackComponent={ErrorFallBack}
+                >
+                <PostContent />
+            </ErrorBoundary>
+           )}
+        </QueryErrorResetBoundary>
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary
+                  onReset={reset}
+                  FallbackComponent={ErrorFallBack}
+                >
+            <ErrorBoundary
+                  FallbackComponent={ErrorFallBack}
+                >
+                <CommentList />
+            </ErrorBoundary>
+          )}
+        </QueryErrorResetBoundary>
+	)
+}
+```
+
+QueryErrorResetBoundary를 쓴 이유는 다시시도 버튼을 눌렀을 때 UI가 다시 렌더링되는데 useQuery는 다시 실행되지 않는다. 그래서 QueryErrorResetBoundary로 ErrorBoundary를 감싼 다음 ErrorBoundary에 `onReset={reset}`을 추가해서 ErrorBoundary의 error 상태가 reset될때 useQuery도 다시 실행될 수 있도록 하였다. React Query를 쓰지 않는다면 ErrorBoundary로만 감싸면 된다.
+
+추가적으로 useQuery시 에러가 발생하면 ErrorBoundary에 잡힐 수 있도록 아래와 같이 설정해주자.
+
+```javascript
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0,
+      suspense: true,
+
+      //❗️ 얘 설정해주기
+      // 발생한 에러를 렌더단계에서 발생시키고 가장 가까운 오류 경계로 전파
+      useErrorBoundary: true,
+    },
+  },
+});
+```
+
+ErrorBoundary로 감싼 컴포넌트에서 에러가 발생했을 시 렌더링되는 ErrorFallback 컴포넌트는 다음과 같이 작성했다.
+
+```javascript
+//components/ErrorFallback.tsx
+"use client";
+
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+import { useRouter } from "next/navigation";
+
+type Props = {
+  error: any,
+  resetErrorBoundary: (...args: any[]) => void,
+};
+
+export default function ErrorFallBack({ error, resetErrorBoundary }: Props) {
+  const router = useRouter();
+
+  const status = error?.response?.status;
+  const { title, content, buttonLabel, handleClick } = getErrorMessage(
+    status,
+    router,
+    resetErrorBoundary
+  );
+
+  return (
+    <div className="my-auto flex flex-col justify-center items-center gap-1">
+      <h1 className="text-xl font-bold">{title}</h1>
+      <span className="text-sm text-center mb-3">{content}</span>
+      <button onClick={handleClick} className="bg-brand-color w-52 text-sm p-1">
+        {buttonLabel}
+      </button>
+    </div>
+  );
+}
+
+function getErrorMessage(
+  status: number | undefined,
+  router: AppRouterInstance,
+  resetErrorBoundary: (...args: any[]) => void
+) {
+  switch (status) {
+    case 401:
+      return {
+        title: "로그인을 해주세요",
+        content: (
+          <span>
+            로그인을 해야 <br /> 이용할 수 있는 기능입니다.
+          </span>
+        ),
+        buttonLabel: "로그인",
+        handleClick: () => router.push("/auth/signin"),
+      };
+
+    default:
+      return {
+        title: "에러가 발생하였습니다",
+        content: (
+          <span>
+            반복된다면 고객센터에 <br /> 문의해주세요.
+          </span>
+        ),
+        buttonLabel: "다시 시도",
+        handleClick: () => resetErrorBoundary(),
+      };
+  }
+}
+```
+
+error status로 분기처리를 해서 알맞은 응답메세지가 보이도록 하였다.
+
+이제 포스트상세 페이지에서 댓글을 렌더링하는 컴포넌트가 에러가 났을 시 다음과 같이 댓글 부분에만 에러 컴포넌트가 렌더링된다.
+![error-updated](/images/error-updated.png)
+
+### PUT, DELETE, UPDATE 요청 시 toast 띄워주기
+
+원래는 이때 발생한 에러도 ErrorBoundary컴포넌트에서 같이 처리하도록 할까 했었으나 각각의 mutation의 onError에서 처리하기로 하였다.
+
+이유는 실패했을 시 처리해야 하는 로직이 대부분 다르고 각 컴포넌트에서 처리해야 더 정확한 처리가 가능하기 때문이다.
+
+그래서 아래와 같이 각각의 컴포넌트에서 onError시 toast를 띄우도록 처리하였다.
+
+```javascript
+addNote.mutate(note, {
+  onSuccess: () => {
+    router.back();
+  },
+  onError(error, variables, context) {
+    toast.error(getErrorMessage(error, "노트작성에 실패하였습니다."));
+  },
+});
+
+//401 에러일 경우 로그인을 해달라는 메세지를 띄우는 건
+// 어느 mutation이나 마찬가지여서 함수로 만들었다.
+function getErrorMessage(error: any, customMessage?: string) {
+  const status = error?.response?.status;
+  switch (status) {
+    case 401:
+      return `${customMessage} 로그인을 해주세요`;
+    default:
+      return customMessage ? `${customMessage}` : "에러가 발생하였습니다.";
+  }
+}
+```
+
+### 결론
+
+프론트엔드에서는 에러를 어떻게 처리하는지 몰라 많이 헤맸었다. GlobalError, ErrorBoundary, Nextjs의 Error페이지, ReactQuery의 QueryErrorBoundary의 개념들이 머리속에서 혼재되어 뒤죽박죽이었고 좋은 에러처리를 하고 싶어서 끙끙댔는데 일단은 이정도까지만 구현하고 에러처리는 넘어가야겠다. 서비스가 더 커져서 더 나은 에러처리가 필요하다면 그때 수정하는게 좋을 것 같다.
+
+예를 들면 인자로 받는 Error타입이 AxiosError또는 Error타입이라서 any로 해놨는데 이걸 CustomError로 만들어서 Axios에서 발생하는 에러와 프론트엔드 코드에서 발생하는 에러 모두를 받을 수 있도록 해도 될 것 같고, useMutation에서 발생한 에러와 ErrorBoundary에서 잡힌 에러 모두 공통처리를 할 수 있도록 코드를 바꿀 수 있을 수도 있을 것 같은데 필요할 때 만들도록 하겠다. 시간을 예상보다 많이 잡아먹어버렸다. 나중에 더 나은 실력으로 에러 코드에 대한 포스팅을 할 수 있었으면 좋겠다!
